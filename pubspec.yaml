@@ -1,0 +1,87 @@
+name: attendance_tracker
+version: 1.0.0+1
+publish_to: none
+description: attendance tracker
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  get: ^4.6.6 # for state management and context less stuff
+
+  phosphor_flutter: ^2.1.0
+  ulid: ^2.0.1
+  sqflite: ^2.4.1
+  
+  qr: ^3.0.2
+  qr_flutter: ^4.1.0
+  qr_code_scanner_plus: ^2.0.9+1
+
+  pdf: ^3.11.2
+  excel: ^4.0.6
+  file_picker: ^8.3.2
+  path: ^1.9.0
+  path_provider: ^2.1.5
+
+  shared_preferences: ^2.2.3 # shared preferences persistence key value store
+
+  flutter_launcher_icons: # change app icon
+  change_app_package_name: # change package name
+  rename_app: 1.4.0 # rename app
+  flutter_native_splash: ^2.4.4
+  permission_handler: ^10.0.0
+  filter_list: ^1.0.3
+  flutter_svg: ^2.0.17
+  url_launcher: ^6.3.1
+
+  flutter:
+    sdk: flutter
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_lints:
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/app_icon.png
+  color_dark: "#000000"
+  image_dark: assets/images/app_icon_dark.png
+
+  android_12:
+    image: assets/images/app_icon.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/app_icon_dark.png
+    icon_background_color_dark: "#000000"
+
+  web: false
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 700
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Regular.ttf
+          weight: 300
+        - asset: assets/fonts/Cairo-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Cairo-SemiBold.ttf
+          weight: 900
+
