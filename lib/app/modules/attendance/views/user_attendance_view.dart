@@ -45,7 +45,7 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
                 child: NoDataFoundWidget(
                   title: 'No Attendances found',
                   message: 'Try adding Attendance',
-                  icon: PhosphorIconsFill.books,
+                  icon: PhosphorIconsFill.calendarBlank,
                   buttonText: 'Add Attendance',
                   action: () => Get.toNamed(
                     Routes.addAttendance,

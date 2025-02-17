@@ -84,7 +84,7 @@ class GroupsView extends GetView<GroupsController> {
                     message: controller.showDeleted
                         ? 'Deleted group to show here'
                         : 'Try adding group',
-                    icon: PhosphorIconsFill.books,
+                    icon: PhosphorIconsFill.users,
                     buttonText: controller.showDeleted
                         ? 'Show Non-Deleted'
                         : 'Create Group',
