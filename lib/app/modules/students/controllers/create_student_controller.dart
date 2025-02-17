@@ -64,7 +64,7 @@ class CreateStudentController extends GetxController {
       primaryGroup: groupId,
     );
 
-    var result = await repository.addStudent(
+    var result = await repository.updateStudent(
       user,
       selectedGroups.map((group) => group.id).toList(),
     );
