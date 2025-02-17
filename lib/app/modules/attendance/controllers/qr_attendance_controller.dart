@@ -60,20 +60,24 @@ class QrAttendanceController extends GetxController {
     status.value = DatabaseExecutionStatus.loading;
     var today = DateFormat("yyyy-MM-dd").format(DateTime.now());
     if (autoSave.value) {
-      await repository.addAttendance(Attendance(
-        id: "${subject.id}:${latestStudent.value!.id}:$today",
-        at: DateTime.now(),
-        subjectId: subject.id,
-        userId: latestStudent.value!.id,
-      ));
-    } else {
-      for (var student in students) {
-        await repository.addAttendance(Attendance(
-          id: "${subject.id}:${student.id}:$today",
+      await repository.addAttendance(
+        Attendance(
+          id: "${subject.id}:${latestStudent.value!.id}:$today",
           at: DateTime.now(),
           subjectId: subject.id,
-          userId: student.id,
-        ));
+          userId: latestStudent.value!.id,
+        ),
+      );
+    } else {
+      for (var student in students) {
+        await repository.addAttendance(
+          Attendance(
+            id: "${subject.id}:${student.id}:$today",
+            at: DateTime.now(),
+            subjectId: subject.id,
+            userId: student.id,
+          ),
+        );
       }
     }
 
@@ -87,7 +91,5 @@ class QrAttendanceController extends GetxController {
       colorText: Colors.white,
       duration: const Duration(milliseconds: 800),
     );
-
-    latestStudent.value = null;
   }
 }
