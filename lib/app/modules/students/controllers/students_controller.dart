@@ -250,7 +250,7 @@ class StudentsController extends GetxController {
       var result = await repository.getStudents(
         groupId: group?.id,
         groupIds: selectedGroups.map((group) => group.id).toList(),
-        pageSize: length,
+        pageSize: 0,
         page: 0,
       );
       var fileBytes = excel.generateStudentsFile(result.data);
