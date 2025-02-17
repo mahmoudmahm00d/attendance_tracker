@@ -112,11 +112,13 @@ Future<Uint8List> generatePDF(
         ),
       );
       currentList.insert(1, SizedBox(height: 16));
+    } else {
+      currentList.insert(0, SizedBox(height: 16));
     }
     pdf.addPage(
       Page(
         theme: isArabic ? ThemeData.withFont(base: arabicFont) : null,
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
         pageFormat: PdfPageFormat.a4,
         build: (context) {
           if (isArabic) {
