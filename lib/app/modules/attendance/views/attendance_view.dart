@@ -65,7 +65,7 @@ class AttendancesView extends GetView<AttendanceController> {
             },
             itemBuilder: (context) {
               return [
-                if (controller.selectionEnabled)
+                if (!controller.selectionEnabled)
                   const PopupMenuItem(
                     value: "ExportExcel",
                     child: Row(
@@ -197,7 +197,7 @@ class AttendancesView extends GetView<AttendanceController> {
               child: NoDataFoundWidget(
                 title: 'No Attendances found',
                 message: 'Try adding Attendance',
-                icon: PhosphorIconsFill.books,
+                icon: PhosphorIconsFill.calendarBlank,
                 buttonText: 'Create Attendance',
                 action: () {}, //=> Get.toNamed(Routes.createAttendance),
               ),
