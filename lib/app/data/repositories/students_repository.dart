@@ -93,10 +93,14 @@ class StudentsRepository {
     var rowsCount = countQueryResult[0]["count"] as int? ?? 0;
 
     rawQuery += """
-    ORDER BY U.name, U.id
-    LIMIT $pageSize
-    OFFSET ${pageSize * page}
+    ORDER BY U.name ASC, U.id
     """;
+    if (0 < pageSize) {
+      rawQuery += """
+      LIMIT $pageSize
+      OFFSET ${pageSize * page}
+      """;
+    }
 
     var data = searchQuery.isNotEmpty
         ? await (await database).rawQuery(
