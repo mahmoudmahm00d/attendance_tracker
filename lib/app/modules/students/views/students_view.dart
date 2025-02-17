@@ -84,7 +84,7 @@ class StudentsView extends GetView<StudentsController> {
                         SizedBox(
                           width: 4,
                         ),
-                        Text("Export current students to Excel"),
+                        Text("Export all students to Excel"),
                       ],
                     ),
                   ),
@@ -97,7 +97,7 @@ class StudentsView extends GetView<StudentsController> {
                         SizedBox(
                           width: 4,
                         ),
-                        Text("Export current students QR codes"),
+                        Text("Export all students QRs"),
                       ],
                     ),
                   ),
@@ -243,7 +243,7 @@ class StudentsView extends GetView<StudentsController> {
               child: NoDataFoundWidget(
                 title: 'No students found',
                 message: 'Try adding student',
-                icon: PhosphorIconsFill.users,
+                icon: PhosphorIconsFill.student,
                 buttonText: 'Create Student',
                 action: () => Get.toNamed(Routes.createStudent),
               ),
@@ -519,19 +519,22 @@ class StudentsView extends GetView<StudentsController> {
                                                     ],
                                                   ),
                                                 ),
-                                                const PopupMenuItem(
-                                                  value: 4,
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(PhosphorIconsBold
-                                                                .trash,
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      Text("Delete",
-                                                      ),
-                                                    ],
+                                                if (controller.showDeleted)
+                                                  const PopupMenuItem(
+                                                    value: 4,
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          PhosphorIconsBold
+                                                              .trash,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          "Delete Permenantly",
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
                                               ];
                                             },
                                             icon: const Icon(PhosphorIconsBold
