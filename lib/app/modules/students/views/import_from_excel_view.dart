@@ -26,29 +26,11 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
             key: controller.formKey,
             child: Column(
               children: [
-                Text(
-                  "Imprtant Notice",
-                  style: context.textTheme.bodyLarge!
-                      .copyWith(color: context.theme.primaryColor),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "The file must contains only name and father name",
-                  style: context.textTheme.bodySmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "First row will be ignored and any row with invalid data will be ingored also",
-                  style: context.textTheme.bodySmall,
-                ),
-                const SizedBox(height: 16),
                 GetBuilder<ImportFromExcelController>(
                   builder: (context) {
                     return SearchAnchor(
                       isFullScreen: false,
                       builder: (context, searchController) {
-                        searchController.text =
-                            controller.user?.group?.name ?? "";
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -280,6 +262,52 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                       );
                     }),
                   ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Imprtant Notice",
+                      style: context.textTheme.bodyLarge!
+                          .copyWith(color: context.theme.primaryColor),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "The file must contains only name and father name",
+                      style: context.textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "First row will be ignored and any row with invalid data will be ingored also",
+                      style: context.textTheme.bodySmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "File Example:",
+                      style: context.textTheme.titleSmall!.copyWith(
+                        color: context.theme.primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                DataTable(
+                  border: TableBorder.all(),
+                  columns: const [
+                    DataColumn(label: Text("Name")),
+                    DataColumn(label: Text("Father name"))
+                  ],
+                  rows: const [
+                    DataRow(
+                      cells: [
+                        DataCell(Text("Mahmoud Mahmoud")),
+                        DataCell(Text("Darwish")),
+                      ],
+                    )
+                  ],
                 ),
                 const SizedBox(height: 60),
               ],
