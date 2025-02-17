@@ -2,12 +2,13 @@ import 'dart:io';
 import 'package:attendance_tracker/app/data/models/attendance.dart';
 import 'package:excel/excel.dart';
 import 'package:attendance_tracker/app/data/models/user.dart';
+import 'package:get/get_utils/get_utils.dart';
 import 'package:ulid/ulid.dart';
 
 Future<List<User>> getUsers(String filePath, String? primaryGroup) async {
   var file = File(filePath);
 
-  if (await file.exists()) {
+  if (!await file.exists()) {
     return [];
   }
 
@@ -17,9 +18,14 @@ Future<List<User>> getUsers(String filePath, String? primaryGroup) async {
   for (var i = 1; i < table.rows.length; i++) {
     try {
       var row = table.rows[i];
-      var name = row[0]?.value.toString();
+      var nameCell = row[0]?.value;
+      if (nameCell == null ||
+          nameCell is! TextCellValue ||
+          nameCell.value.text.isBlank!) {
+        continue;
+      }
+      String name = nameCell.value.text!;
       var fatherName = row.length == 2 ? row[1]?.value.toString() ?? "" : "";
-      if (name == null || name.isEmpty) continue;
       users.add(
         User(
           id: Ulid.new().toString(),
