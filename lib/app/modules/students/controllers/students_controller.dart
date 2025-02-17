@@ -5,6 +5,7 @@ import 'package:attendance_tracker/app/data/local/my_shared_pref.dart';
 import 'package:attendance_tracker/app/data/repositories/students_repository.dart';
 import 'package:attendance_tracker/app/services/pdf_service.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:attendance_tracker/app/data/local/database_helper.dart';
@@ -44,9 +45,11 @@ class StudentsController extends GetxController {
   Set<Group> selectedGroups = <Group>{};
   String? selectedManagedGroup;
   Set<Group> selectedManagedGroups = <Group>{};
-  bool filtering = false;
+  // bool filtering = false;
+  bool get filtering => showDeleted || selectedGroups.isNotEmpty;
   bool showDeleted = false;
   Debouncer debouncer = Debouncer(delay: const Duration(milliseconds: 300));
+  bool isProcessing = false;
 
   Future getGroups() async {
     loadingGroupsQueryStatus = DatabaseExecutionStatus.loading;
@@ -67,7 +70,6 @@ class StudentsController extends GetxController {
     if (goBack) {
       Get.back();
     }
-    filtering = true;
     page = 0;
     users = [];
     getStudents();
@@ -77,7 +79,7 @@ class StudentsController extends GetxController {
     if (goBack) {
       Get.back();
     }
-    filtering = false;
+    showDeleted = false;
     selectedGroups.clear();
     page = 0;
     users = [];
@@ -197,27 +199,79 @@ class StudentsController extends GetxController {
       return;
     }
 
+    isProcessing = true;
+    var export = false;
+    await Get.defaultDialog(
+      titlePadding: const EdgeInsets.all(16),
+      cancel: TextButton(
+        onPressed: () {
+          Get.back();
+          update();
+        },
+        child: const Text("Cancel"),
+      ),
+      confirm: ElevatedButton(
+        onPressed: () {
+          export = true;
+          Get.back();
+          update();
+        },
+        child: const Text("Yes Export"),
+      ),
+      titleStyle: Get.context!.textTheme.titleLarge,
+      title: "Exporting all student with applied filters",
+      middleText: "This will export all students with applied filters",
+      barrierDismissible: false,
+    );
+
+    if (!export) {
+      isProcessing = false;
+      return;
+    }
+
     var dir = await FilePicker.platform.getDirectoryPath();
     if (dir == null || dir.isEmpty) {
+      isProcessing = false;
       return;
     }
 
     try {
-      var fileBytes = excel.generateStudentsFile(users);
+      Get.dialog(
+        PopScope(
+          canPop: false,
+          child: CupertinoActivityIndicator(
+            radius: 16,
+            color: Get.context?.theme.primaryColor,
+          ),
+        ),
+        barrierColor: Get.context?.theme.scaffoldBackgroundColor,
+        barrierDismissible: false,
+      );
+      var result = await repository.getStudents(
+        groupId: group?.id,
+        groupIds: selectedGroups.map((group) => group.id).toList(),
+        pageSize: length,
+        page: 0,
+      );
+      var fileBytes = excel.generateStudentsFile(result.data);
       var path =
           "$dir/exported-students-${DateFormat("yyyy-MM-dd").format(DateTime.now())}.xlsx";
       File(path)
         ..createSync(recursive: true)
         ..writeAsBytesSync(fileBytes!);
+      Get.back();
       CustomSnackBar.showCustomSnackBar(
         title: "Students data exported successfully",
         message: "Report saved at $path",
       );
+      isProcessing = false;
     } on Exception {
+      Get.back();
       CustomSnackBar.showCustomErrorSnackBar(
         title: "Failed to export students",
         message: "Please check storage permission",
       );
+      isProcessing = false;
     }
   }
 
@@ -232,16 +286,19 @@ class StudentsController extends GetxController {
       return;
     }
 
+    isProcessing = true;
     var isArabic = false;
     await Get.defaultDialog(
+      onWillPop: () async => false,
+      titlePadding: const EdgeInsets.all(16),
       cancel: TextButton(
         onPressed: () {
           Get.back();
           update();
         },
-        child: const Text("no"),
+        child: const Text("No use English"),
       ),
-      confirm: TextButton(
+      confirm: ElevatedButton(
         onPressed: () {
           isArabic = true;
           Get.back();
@@ -250,14 +307,40 @@ class StudentsController extends GetxController {
         child: const Text("Yes use Arabic"),
       ),
       titleStyle: Get.context!.textTheme.titleLarge,
-      title: "Use Arabic font?",
-      middleText: "This will make the directionality rtl",
+      title: "Exporting all student with applied filters using Arabic font",
+      middleText: "This will make the text direction RTL (Right to Left)",
       barrierDismissible: false,
     );
 
-    var pdf = await generatePDF(
+    var dir = await FilePicker.platform.getDirectoryPath();
+    if (dir == null || dir.isEmpty) {
+      isProcessing = false;
+      return;
+    }
+
+    // TODO: Handle QR the right way (selected)
+    // TODO: Update the dialog message to be more clear
+    try {
+      Get.dialog(
+        PopScope(
+          canPop: false,
+          child: CupertinoActivityIndicator(
+            radius: 16,
+            color: Get.context?.theme.primaryColor,
+          ),
+        ),
+        barrierColor: Get.context?.theme.scaffoldBackgroundColor,
+        barrierDismissible: false,
+      );
+      var result = await repository.getStudents(
+        groupId: group?.id,
+        groupIds: selectedGroups.map((group) => group.id).toList(),
+        pageSize: 0,
+        page: 0,
+      );
+      var pdf = await generatePDF(
         "Students QRs",
-        users
+        result.data
             .map(
               (user) => PDFData(
                 data: user.id,
@@ -266,37 +349,37 @@ class StudentsController extends GetxController {
             )
             .toList(),
         size: BarcodeSize.small,
-        isArabic: isArabic);
+        isArabic: isArabic,
+      );
 
-    var dir = await FilePicker.platform.getDirectoryPath();
-    if (dir == null || dir.isEmpty) {
-      return;
-    }
-    try {
       String filePath;
-      var now = DateTime.now();
       if (group != null) {
         filePath =
-            "$dir/QRs-${group!.name}-${now.year}-${now.month}-${now.day}-${now.hour}-${now.minute}-${now.second}.pdf";
+            "$dir/QRs-${group!.name}-${DateFormat("yyyy-MM-dd-hh-mm-ss").format(DateTime.now())}.pdf";
       } else {
-        filePath = "$dir/QRs.pdf";
+        filePath =
+            "$dir/QRs-${DateFormat("yyyy-MM-dd-hh-mm-ss").format(DateTime.now())}.pdf";
       }
       File(join(filePath))
         ..createSync(recursive: true)
         ..writeAsBytesSync(pdf);
+      Get.back();
       Get.snackbar(
         'Success',
-        'Saved Successfully at "$dir/QRs.pdf"',
+        'Saved Successfully at "$filePath"',
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
+      isProcessing = false;
     } on Exception {
+      Get.back();
       Get.snackbar(
         "Error",
         "Something went wrong",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+      isProcessing = false;
     }
   }
 
