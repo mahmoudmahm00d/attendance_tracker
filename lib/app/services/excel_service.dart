@@ -113,7 +113,7 @@ List<int>? generateAttendanceReport(
   for (var i = 0; i < dates.length; i++) {
     sheet
         .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: i + 3))
-        .value = TextCellValue(i.toString().padLeft(3, "0"));
+        .value = TextCellValue((i + 1).toString().padLeft(3, "0"));
     sheet
         .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: i + 3))
         .value = TextCellValue(dates[i]);
