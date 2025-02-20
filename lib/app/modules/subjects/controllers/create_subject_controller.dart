@@ -11,13 +11,14 @@ class CreateSubjectController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   Subject? subject = Get.arguments;
   bool get isEdit => subject != null;
-  
+
+  SearchController searchController = SearchController();
   TextEditingController nameController = TextEditingController();
   String? groupId;
-  
+
   final SubjectsRepository repository;
   final GroupsRepository groupsRepository;
-  
+
   CreateSubjectController(this.repository, this.groupsRepository);
 
   void add() async {
@@ -67,6 +68,7 @@ class CreateSubjectController extends GetxController {
   @override
   void onInit() {
     initialize();
+    searchController.text = subject?.group?.name.toString() ?? "";
     super.onInit();
   }
 

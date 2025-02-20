@@ -44,15 +44,12 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                   const SizedBox(height: 16),
                   SearchAnchor(
                     isFullScreen: false,
+                    searchController: controller.searchController,
                     builder: (context, searchController) {
-                      if (controller.isEdit) {
-                        searchController.text =
-                            controller.subject!.group!.name.toString();
-                      }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Group"),
+                          const Text("Primary Group"),
                           const SizedBox(height: 4),
                           TextFormField(
                             controller: searchController,
@@ -101,6 +98,22 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                         );
                       });
                     },
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Imprtant Notice",
+                        style: context.textTheme.bodyLarge!
+                            .copyWith(color: context.theme.primaryColor),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "This subject can only add attendance to students with the same selected primary group or any member in it",
+                        style: context.textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                   const Spacer(),
                   Center(
