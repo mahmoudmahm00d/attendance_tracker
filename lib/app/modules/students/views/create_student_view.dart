@@ -53,12 +53,12 @@ class CreateStudentView extends GetView<CreateStudentController> {
                   builder: (context) {
                     return SearchAnchor(
                       isFullScreen: false,
+                      searchController: controller.searchController,
                       builder: (context, searchController) {
-                        searchController.text = controller.user?.group?.name ?? "";
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Group"),
+                            const Text("Primary Group"),
                             const SizedBox(height: 4),
                             TextFormField(
                               controller: searchController,
@@ -124,9 +124,12 @@ class CreateStudentView extends GetView<CreateStudentController> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Groups"),
+                            const Text("Show in Groups"),
                             const SizedBox(height: 4),
                             TextFormField(
+                              onSaved: (_) {
+                                searchController.closeView("");
+                              },
                               controller: searchController,
                               validator: (value) {
                                 return null;

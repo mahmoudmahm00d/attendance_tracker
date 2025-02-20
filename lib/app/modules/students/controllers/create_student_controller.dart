@@ -1,3 +1,4 @@
+import 'package:attendance_tracker/app/components/custom_snackbar.dart';
 import 'package:attendance_tracker/app/data/models/user.dart';
 import 'package:attendance_tracker/app/data/repositories/groups_repository.dart';
 import 'package:attendance_tracker/app/data/repositories/students_repository.dart';
@@ -21,6 +22,7 @@ class CreateStudentController extends GetxController {
   User? user = Get.arguments;
   bool get isEdit => user != null;
   late Database database;
+  SearchController searchController = SearchController();
   TextEditingController nameController =
       TextEditingController(text: Get.parameters["suggestedName"]);
   TextEditingController fatherController = TextEditingController();
@@ -48,6 +50,10 @@ class CreateStudentController extends GetxController {
 
     if (result != 0) {
       Get.back();
+      CustomSnackBar.showCustomSnackBar(
+        title: "User added successfully",
+        message: "${user.name} Added successfully",
+      );
       Get.find<StudentsController>().getStudents();
     }
   }
@@ -89,6 +95,7 @@ class CreateStudentController extends GetxController {
   @override
   void onInit() {
     initialize();
+    searchController.text = user?.group?.name ?? "";
     super.onInit();
   }
 
