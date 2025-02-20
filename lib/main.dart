@@ -27,7 +27,6 @@ Future<void> main() async {
           data: MyTheme.getThemeData(isLight: themeIsLight),
           child: MediaQuery(
             data: MediaQuery.of(context),
-            // .copyWith(textScaler: const TextScaler.linear(1.0)),
             child: widget!,
           ),
         );
