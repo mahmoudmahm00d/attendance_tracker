@@ -30,8 +30,7 @@ class StudentsController extends GetxController {
   bool get hasMoreData => (queryStudentsCount - users.length) > 0;
   Group? group = Get.arguments;
   late Database database;
-  DatabaseExecutionStatus defaultQueryStatus = DatabaseExecutionStatus.loading;
-  DatabaseExecutionStatus searchQueryStatus = DatabaseExecutionStatus.success;
+  DatabaseExecutionStatus queryStatus = DatabaseExecutionStatus.success;
   DatabaseExecutionStatus loadingGroupsQueryStatus =
       DatabaseExecutionStatus.loading;
   DatabaseExecutionStatus loadingMoreDataStatus =
@@ -45,7 +44,6 @@ class StudentsController extends GetxController {
   Set<Group> selectedGroups = <Group>{};
   String? selectedManagedGroup;
   Set<Group> selectedManagedGroups = <Group>{};
-  // bool filtering = false;
   bool get filtering => showDeleted || selectedGroups.isNotEmpty;
   bool showDeleted = false;
   Debouncer debouncer = Debouncer(delay: const Duration(milliseconds: 300));
@@ -109,10 +107,8 @@ class StudentsController extends GetxController {
   }) async {
     if (loadingMoreData) {
       loadingMoreDataStatus = DatabaseExecutionStatus.loading;
-    } else if (query.isNotEmpty) {
-      searchQueryStatus = DatabaseExecutionStatus.loading;
     } else {
-      defaultQueryStatus = DatabaseExecutionStatus.loading;
+      queryStatus = DatabaseExecutionStatus.loading;
     }
     update();
 
@@ -134,10 +130,8 @@ class StudentsController extends GetxController {
     }
     if (loadingMoreData) {
       loadingMoreDataStatus = DatabaseExecutionStatus.success;
-    } else if (query.isNotEmpty) {
-      searchQueryStatus = DatabaseExecutionStatus.success;
     } else {
-      defaultQueryStatus = DatabaseExecutionStatus.success;
+      queryStatus = DatabaseExecutionStatus.success;
     }
     update();
   }
@@ -165,18 +159,18 @@ class StudentsController extends GetxController {
   }
 
   deleteStudent(User user) async {
-    defaultQueryStatus = DatabaseExecutionStatus.loading;
+    queryStatus = DatabaseExecutionStatus.loading;
     update();
     var result = await repository.deleteStudent(user);
     if (result == 1) {
       getStudents(group: group, query: search.text);
     }
-    defaultQueryStatus = DatabaseExecutionStatus.loading;
+    queryStatus = DatabaseExecutionStatus.loading;
     update();
   }
 
   softDeleteStudent(User user) async {
-    defaultQueryStatus = DatabaseExecutionStatus.loading;
+    queryStatus = DatabaseExecutionStatus.loading;
     update();
     var result = user.deleted == 1
         ? await repository.restoreDeletedStudent(user)
@@ -184,7 +178,7 @@ class StudentsController extends GetxController {
     if (result == 1) {
       getStudents(group: group, query: search.text);
     }
-    defaultQueryStatus = DatabaseExecutionStatus.success;
+    queryStatus = DatabaseExecutionStatus.success;
     update();
   }
 

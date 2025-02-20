@@ -228,16 +228,6 @@ class StudentsView extends GetView<StudentsController> {
       ),
       body: GetBuilder<StudentsController>(
         builder: (_) {
-          if (controller.defaultQueryStatus ==
-              DatabaseExecutionStatus.loading) {
-            return Center(
-              child: CupertinoActivityIndicator(
-                radius: 16,
-                color: Theme.of(context).primaryColor,
-              ),
-            );
-          }
-
           if (controller.users.isEmpty && controller.studentsCount == 0) {
             return Center(
               child: NoDataFoundWidget(
@@ -339,12 +329,15 @@ class StudentsView extends GetView<StudentsController> {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: (controller.searchQueryStatus ==
+                    child: (controller.queryStatus ==
                             DatabaseExecutionStatus.loading)
-                        ? Center(
-                            child: CupertinoActivityIndicator(
-                              radius: 16,
-                              color: Theme.of(context).primaryColor,
+                        ? Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(
+                              child: CupertinoActivityIndicator(
+                                radius: 16,
+                                color: Theme.of(context).primaryColor,
+                              ),
                             ),
                           )
                         : Column(
