@@ -23,6 +23,9 @@ class AttendancesView extends GetView<AttendanceController> {
           onPressed: Get.back,
         ),
         title: GetBuilder<AttendanceController>(builder: (_) {
+          if (controller.selectionEnabled) {
+            return Text("${controller.selectedAttendance.length} Selected");
+          }
           if (controller.subject != null) {
             return Text("${controller.subject!.name}'s Attendances");
           }
@@ -310,10 +313,25 @@ class AttendancesView extends GetView<AttendanceController> {
                                 ...controller.attendance.map<Widget>(
                                   (attendance) {
                                     return ListTile(
+                                      onTap: () {
+                                        if (!controller.selectionEnabled) {
+                                          return;
+                                        }
+                                        if (controller.selectedAttendance
+                                            .contains(attendance)) {
+                                          controller.selectedAttendance
+                                              .remove(attendance);
+                                        } else {
+                                          controller.selectedAttendance
+                                              .add(attendance);
+                                        }
+                                        controller.update();
+                                      },
                                       contentPadding: const EdgeInsets.all(0),
                                       title: Text(attendance.name),
                                       subtitle: Row(
                                         children: [
+                                          const Text("attended "),
                                           Text(
                                             "${attendance.count}",
                                             style: context.textTheme.bodyLarge!
@@ -321,7 +339,7 @@ class AttendancesView extends GetView<AttendanceController> {
                                                     fontWeight:
                                                         FontWeight.w600),
                                           ),
-                                          const Text("/"),
+                                          const Text(" of "),
                                           Text(
                                             "${controller.attendanceCount}",
                                           ),
