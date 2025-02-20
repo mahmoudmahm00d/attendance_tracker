@@ -33,7 +33,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Group"),
+                          const Text("Primary Group"),
                           const SizedBox(height: 4),
                           TextFormField(
                             controller: searchController,
@@ -99,9 +99,12 @@ class ManageGroupsView extends GetView<StudentsController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Groups"),
+                          const Text("Show in Groups"),
                           const SizedBox(height: 4),
                           TextFormField(
+                            onSaved: (_) {
+                                searchController.closeView("");
+                              },
                             controller: searchController,
                             validator: (value) {
                               return null;
