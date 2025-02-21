@@ -6,6 +6,7 @@ import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:attendance_tracker/app/components/no_data_found_widget.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class UserAttendancesView extends GetView<UserAttendanceController> {
   const UserAttendancesView({super.key});
@@ -18,7 +19,10 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
           onPressed: Get.back,
         ),
         title: GetBuilder<UserAttendanceController>(builder: (_) {
-          return Text("${controller.user.name}'s Attendances");
+          return Text(
+            Strings.userAttendances.tr
+                .replaceAll('@name', controller.user.name),
+          );
         }),
         centerTitle: true,
       ),
@@ -43,10 +47,10 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
             if (controller.attendance.isEmpty) {
               return Center(
                 child: NoDataFoundWidget(
-                  title: 'No Attendances found',
-                  message: 'Try adding Attendance',
+                  title: Strings.noAttendancesFound.tr,
+                  message: Strings.tryAddingAttendance.tr,
                   icon: PhosphorIconsFill.calendarBlank,
-                  buttonText: 'Add Attendance',
+                  buttonText: Strings.addAttendance.tr,
                   action: () => Get.toNamed(
                     Routes.addAttendance,
                     arguments: {
@@ -79,18 +83,22 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
                               onPressed: () {
                                 Get.back(result: false);
                               },
-                              child: const Text("No, keep"),
+                              child: Text(Strings.noKeep.tr),
                             ),
                             confirm: ElevatedButton(
                               onPressed: () {
                                 Get.back(result: true);
                               },
-                              child: const Text("Yes, delete"),
+                              child: Text(Strings.yesDelete.tr),
                             ),
                             titleStyle: context.textTheme.titleLarge,
-                            title: "Delete Attendance",
+                            title: Strings.deleteAttendance.tr,
                             middleText:
-                                "Are really want to delete ${DateFormat("yyyy-MM-dd").format(controller.attendance[index].at)}?",
+                                Strings.deleteAttendanceConfirm.tr.replaceAll(
+                              '@date',
+                              DateFormat("yyyy-MM-dd")
+                                  .format(controller.attendance[index].at),
+                            ),
                             barrierDismissible: false,
                           );
 
@@ -99,13 +107,13 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
                       },
                       itemBuilder: (context) {
                         return [
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 1,
                             child: Row(
                               children: [
-                                Icon(PhosphorIconsBold.trash),
-                                SizedBox(width: 8),
-                                Text("Delete"),
+                                const Icon(PhosphorIconsBold.trash),
+                                const SizedBox(width: 8),
+                                Text(Strings.delete.tr),
                               ],
                             ),
                           ),

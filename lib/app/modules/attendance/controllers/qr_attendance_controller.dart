@@ -1,3 +1,4 @@
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +40,7 @@ class QrAttendanceController extends GetxController {
             await studentsRepository.getStudent(scanData.code!);
 
         if (latestStudent.value == null) {
-          result.value = "User not found";
+          result.value = Strings.userNotFound;
           return;
         }
 

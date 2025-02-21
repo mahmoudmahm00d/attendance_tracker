@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/app/components/custom_snackbar.dart';
 import 'package:attendance_tracker/app/routes/app_pages.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,12 +37,12 @@ class _GlobalOperationWidgetState extends State<GlobalOperationWidget> {
     Get.toNamed(Routes.home);
     if (result == null) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Error",
-        message: "Something went wrong",
+        title: Strings.error.tr,
+        message: Strings.somethingWentWrong.tr,
       );
     } else {
       CustomSnackBar.showCustomSnackBar(
-        title: "Exported",
+        title: Strings.done.tr,
         message: result,
       );
     }

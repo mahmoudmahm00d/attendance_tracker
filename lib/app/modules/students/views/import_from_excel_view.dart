@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class ImportFromExcelView extends GetView<ImportFromExcelController> {
   const ImportFromExcelView({super.key});
@@ -16,7 +17,7 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
           icon: const Icon(PhosphorIconsBold.caretLeft),
           onPressed: Get.back,
         ),
-        title: const Text('Import From Excel'),
+        title: Text(Strings.importFromExcel.tr),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -34,7 +35,7 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Primary Group"),
+                            Text(Strings.primaryGroup.tr),
                             const SizedBox(height: 4),
                             TextFormField(
                               controller: searchController,
@@ -61,7 +62,7 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                                           child: Icon(PhosphorIconsBold.x),
                                         ),
                                       ),
-                                hintText: 'Select Group',
+                                hintText: Strings.selectGroup.tr,
                               ),
                               onTap: () {
                                 if (controller.loadingGroups ==
@@ -100,7 +101,7 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Show in Groups"),
+                            Text(Strings.showInGroups.tr),
                             const SizedBox(height: 4),
                             TextFormField(
                               onSaved: (_) {
@@ -118,7 +119,7 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                                     : const Icon(
                                         PhosphorIconsBold.magnifyingGlass,
                                       ),
-                                hintText: 'Search for a group',
+                                hintText: Strings.searchForGroup.tr,
                               ),
                               onTap: () {
                                 if (controller.loadingGroups ==
@@ -195,7 +196,7 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                         ).toList(),
                       );
                     }
-                    return const Text("No selected groups");
+                    return Text(Strings.noSelectedGroups.tr);
                   },
                 ),
                 const SizedBox(height: 16),
@@ -208,9 +209,9 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                         backgroundColor:
                             context.theme.primaryColor.withAlpha(120),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text("PickFile"),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(Strings.pickFile.tr),
                       ),
                     ),
                   ),
@@ -221,7 +222,12 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                     if (controller.file != null) {
                       return Column(
                         children: [
-                          Text("File: ${controller.file!.name} selected"),
+                          Text(
+                            Strings.fileSelected.tr.replaceAll(
+                              "@name",
+                              controller.file!.name,
+                            ),
+                          ),
                           const SizedBox(height: 16),
                         ],
                       );
@@ -243,11 +249,12 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   controller.processing
-                                      ? "Processing"
-                                      : "Import",
+                                      ? Strings.processing.tr
+                                      : Strings.import.tr,
                                 ),
                                 if (controller.processing)
                                   const SizedBox(width: 8),
@@ -273,23 +280,23 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Imprtant Notice",
+                      Strings.importantNotice.tr,
                       style: context.textTheme.bodyLarge!
                           .copyWith(color: context.theme.primaryColor),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "The file must contains only name and father name",
+                      Strings.fileRequirements.tr,
                       style: context.textTheme.bodySmall,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "First row will be ignored and any row with invalid data will be ingored also",
+                      Strings.rowsIgnoreNotice.tr,
                       style: context.textTheme.bodySmall,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "File Example:",
+                      Strings.fileExample.tr,
                       style: context.textTheme.titleSmall!.copyWith(
                         color: context.theme.primaryColor,
                       ),
@@ -299,15 +306,15 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                 const SizedBox(height: 16),
                 DataTable(
                   border: TableBorder.all(),
-                  columns: const [
-                    DataColumn(label: Text("Name")),
-                    DataColumn(label: Text("Father name"))
+                  columns: [
+                    DataColumn(label: Text(Strings.name.tr)),
+                    DataColumn(label: Text(Strings.fatherName.tr))
                   ],
-                  rows: const [
+                  rows: [
                     DataRow(
                       cells: [
-                        DataCell(Text("Mahmoud Mahmoud")),
-                        DataCell(Text("Darwish")),
+                        DataCell(Text(Strings.exampleName.tr)),
+                        DataCell(Text(Strings.exampleFatherName.tr)),
                       ],
                     )
                   ],

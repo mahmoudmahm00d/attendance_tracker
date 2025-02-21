@@ -1,4 +1,5 @@
 import 'package:attendance_tracker/app/modules/attendance/controllers/qr_attendance_controller.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +47,7 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                   key: controller.qrKey,
                   onQRViewCreated: controller.onQRViewCreated,
                   overlay: QrScannerOverlayShape(
-                    borderColor: controller.result.value == "User not found"
+                    borderColor: controller.result.value == Strings.userNotFound
                         ? Colors.red
                         : Colors.green,
                     borderRadius: 8,
@@ -76,7 +77,7 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                       ),
                       Row(
                         children: [
-                          Text("Session users count:",
+                          Text(Strings.sessionUsersCount.tr,
                               style: context.textTheme.bodyMedium),
                           const Spacer(),
                           Obx(
@@ -87,11 +88,10 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                           ),
                         ],
                       ),
-                      // const SizedBox(height: 4),
                       Row(
                         children: [
                           Text(
-                            "Show users",
+                            Strings.showUsers.tr,
                             style: context.textTheme.bodyMedium,
                           ),
                           const Spacer(),
@@ -120,7 +120,7 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                                   return Padding(
                                     padding: const EdgeInsets.all(32.0),
                                     child: Text(
-                                      "No user added yet",
+                                      Strings.noUserAddedYet.tr,
                                       style: context.textTheme.titleSmall,
                                     ),
                                   );
@@ -162,12 +162,13 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                           children: [
                             Row(
                               children: [
-                                Text("Name:",
+                                Text(Strings.name.tr,
                                     style: context.textTheme.bodyMedium),
                                 const Spacer(),
                                 Obx(
                                   () => Text(
-                                    controller.latestStudent.value?.name ?? "none",
+                                    controller.latestStudent.value?.name ??
+                                        Strings.none.tr,
                                     style: context.textTheme.bodyLarge,
                                   ),
                                 ),
@@ -177,26 +178,25 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                             Row(
                               children: [
                                 Text(
-                                  "Father name:",
+                                  Strings.fatherName.tr,
                                   style: context.textTheme.bodyMedium,
                                 ),
                                 const Spacer(),
                                 Obx(
                                   () => Text(
-                                    controller.latestStudent.value?.fatherName ??
-                                        "none",
+                                    controller
+                                            .latestStudent.value?.fatherName ??
+                                        Strings.none.tr,
                                     style: context.textTheme.bodyLarge,
                                   ),
                                 ),
                               ],
                             ),
-                            const Divider(
-                              color: Colors.grey,
-                            ),
+                            const Divider(color: Colors.grey),
                             Row(
                               children: [
                                 Text(
-                                  "Auto save",
+                                  Strings.autoSave.tr,
                                   style: context.textTheme.bodyMedium,
                                 ),
                                 const Spacer(),
@@ -213,12 +213,12 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                             Obx(
                               () {
                                 if (controller.result.value ==
-                                    "User not found") {
+                                    Strings.userNotFound) {
                                   return const SizedBox.shrink();
                                 }
 
                                 if (controller.autoSave.value) {
-                                  return const Text("Auto Saved Enabled");
+                                  return Text(Strings.autoSaveEnabled.tr);
                                 }
 
                                 return Row(
@@ -226,20 +226,18 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
-                                      // width: 160,
                                       child: TextButton(
                                         onPressed: () {
                                           controller.result.value = "";
                                           controller.latestStudent.value = null;
                                         },
-                                        child: const Text("Discard"),
+                                        child: Text(Strings.discard.tr),
                                       ),
                                     ),
                                     SizedBox(
-                                      // width: 160,
                                       child: ElevatedButton(
                                         onPressed: controller.addAttendance,
-                                        child: const Text("Ok"),
+                                        child: Text(Strings.addAttendance.tr),
                                       ),
                                     ),
                                   ],

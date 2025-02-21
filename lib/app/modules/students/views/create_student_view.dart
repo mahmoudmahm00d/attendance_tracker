@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:attendance_tracker/app/components/my_text_form_field.dart';
 import 'package:attendance_tracker/app/modules/students/controllers/create_student_controller.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CreateStudentView extends GetView<CreateStudentController> {
@@ -17,9 +18,9 @@ class CreateStudentView extends GetView<CreateStudentController> {
           icon: const Icon(PhosphorIconsBold.caretLeft),
           onPressed: Get.back,
         ),
-        title: (controller.isEdit)
-            ? const Text('Edit Student')
-            : const Text('Create Student'),
+        title: Text(
+          controller.isEdit ? Strings.editStudent.tr : Strings.createStudent.tr,
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -33,11 +34,11 @@ class CreateStudentView extends GetView<CreateStudentController> {
                 const SizedBox(height: 16),
                 MyTextFormField(
                   controller: controller.nameController,
-                  heading: "Name",
-                  hint: "Mahmoud Mahmoud",
+                  heading: Strings.studentName.tr,
+                  hint: Strings.studentNameHint.tr,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please enter student name";
+                      return Strings.enterStudentName.tr;
                     }
                     return null;
                   },
@@ -45,8 +46,8 @@ class CreateStudentView extends GetView<CreateStudentController> {
                 const SizedBox(height: 16),
                 MyTextFormField(
                   controller: controller.fatherController,
-                  heading: "Father Name",
-                  hint: "Darwish",
+                  heading: Strings.fatherName.tr,
+                  hint: Strings.fatherNameHint.tr,
                 ),
                 const SizedBox(height: 16),
                 GetBuilder<CreateStudentController>(
@@ -58,7 +59,7 @@ class CreateStudentView extends GetView<CreateStudentController> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Primary Group"),
+                            Text(Strings.primaryGroup.tr),
                             const SizedBox(height: 4),
                             TextFormField(
                               controller: searchController,
@@ -85,7 +86,7 @@ class CreateStudentView extends GetView<CreateStudentController> {
                                           child: Icon(PhosphorIconsBold.x),
                                         ),
                                       ),
-                                hintText: 'Select Group',
+                                hintText: Strings.selectGroup.tr,
                               ),
                               onTap: () {
                                 if (controller.loadingGroups ==
@@ -124,7 +125,7 @@ class CreateStudentView extends GetView<CreateStudentController> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Show in Groups"),
+                            Text(Strings.showInGroups.tr),
                             const SizedBox(height: 4),
                             TextFormField(
                               onSaved: (_) {
@@ -142,7 +143,7 @@ class CreateStudentView extends GetView<CreateStudentController> {
                                     : const Icon(
                                         PhosphorIconsBold.magnifyingGlass,
                                       ),
-                                hintText: 'Search for a group',
+                                hintText: Strings.searchForGroup.tr,
                               ),
                               onTap: () {
                                 if (controller.loadingGroups ==
@@ -228,7 +229,7 @@ class CreateStudentView extends GetView<CreateStudentController> {
                         ).toList(),
                       );
                     }
-                    return const Text("No selected groups");
+                    return Text(Strings.noSelectedGroups.tr);
                   },
                 ),
                 const SizedBox(height: 16),
@@ -243,8 +244,8 @@ class CreateStudentView extends GetView<CreateStudentController> {
                         padding: const EdgeInsets.all(8),
                         child: Text(
                           controller.isEdit
-                              ? 'Update Student'
-                              : 'Create Student',
+                              ? Strings.updateStudent.tr
+                              : Strings.createStudent.tr,
                         ),
                       ),
                     ),

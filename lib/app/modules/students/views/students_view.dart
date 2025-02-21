@@ -12,6 +12,7 @@ import 'package:attendance_tracker/app/components/no_data_found_widget.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../controllers/students_controller.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class StudentsView extends GetView<StudentsController> {
   const StudentsView({super.key});
@@ -26,12 +27,14 @@ class StudentsView extends GetView<StudentsController> {
         title: GetBuilder<StudentsController>(
           builder: (_) {
             if (controller.selectionEnabled) {
-              return Text("${controller.selectedUsers.length} Selected");
+              return Text(Strings.selected.tr.replaceAll(
+                  '@count', controller.selectedUsers.length.toString()));
             }
             if (controller.group != null) {
-              return Text("${controller.group!.name}'s Students");
+              return Text(Strings.studentsOf.tr
+                  .replaceAll('@name', controller.group!.name));
             }
-            return const Text('Students');
+            return Text(Strings.students.tr);
           },
         ),
         centerTitle: true,
@@ -63,41 +66,41 @@ class StudentsView extends GetView<StudentsController> {
             itemBuilder: (context) {
               return [
                 if (!controller.selectionEnabled)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: "ImportFromExcel",
                     child: Row(
                       children: [
-                        Icon(PhosphorIconsBold.fileXls),
-                        SizedBox(
+                        const Icon(PhosphorIconsBold.fileXls),
+                        const SizedBox(
                           width: 4,
                         ),
-                        Text("Import from Excel"),
+                        Text(Strings.importFromExcel.tr),
                       ],
                     ),
                   ),
                 if (!controller.selectionEnabled)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: "ExportExcel",
                     child: Row(
                       children: [
-                        Icon(PhosphorIconsBold.fileXls),
-                        SizedBox(
+                        const Icon(PhosphorIconsBold.fileXls),
+                        const SizedBox(
                           width: 4,
                         ),
-                        Text("Export all students to Excel"),
+                        Text(Strings.exportToExcel.tr),
                       ],
                     ),
                   ),
                 if (!controller.selectionEnabled)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: "ExportQrs",
                     child: Row(
                       children: [
-                        Icon(PhosphorIconsBold.qrCode),
-                        SizedBox(
+                        const Icon(PhosphorIconsBold.qrCode),
+                        const SizedBox(
                           width: 4,
                         ),
-                        Text("Export all students QRs"),
+                        Text(Strings.exportQrs.tr),
                       ],
                     ),
                   ),
@@ -115,8 +118,8 @@ class StudentsView extends GetView<StudentsController> {
                       ),
                       Text(
                         controller.selectionEnabled
-                            ? "Remove Selection"
-                            : "Select Students",
+                            ? Strings.removeSelection.tr
+                            : Strings.selectStudents.tr,
                       ),
                     ],
                   ),
@@ -155,8 +158,8 @@ class StudentsView extends GetView<StudentsController> {
                   if (value == "ManageGroups") {
                     if (controller.selectedUsers.isEmpty) {
                       CustomSnackBar.showCustomErrorSnackBar(
-                        title: "No user selected",
-                        message: "You must select at least one users",
+                        title: Strings.noUserSelected.tr,
+                        message: Strings.mustSelectOneUser.tr,
                       );
                       return;
                     }
@@ -167,15 +170,15 @@ class StudentsView extends GetView<StudentsController> {
                 },
                 itemBuilder: (context) {
                   return [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: "ManageGroups",
                       child: Row(
                         children: [
-                          Icon(PhosphorIconsBold.userCircleDashed),
-                          SizedBox(
+                          const Icon(PhosphorIconsBold.userCircleDashed),
+                          const SizedBox(
                             width: 4,
                           ),
-                          Text("Manage Groups"),
+                          Text(Strings.manageGroups.tr),
                         ],
                       ),
                     ),
@@ -198,8 +201,8 @@ class StudentsView extends GetView<StudentsController> {
                           Text(
                             controller.users.length ==
                                     controller.selectedUsers.length
-                                ? "Unselect All"
-                                : "Select All",
+                                ? Strings.unselectAll.tr
+                                : Strings.selectAll.tr,
                           ),
                         ],
                       ),
@@ -231,17 +234,19 @@ class StudentsView extends GetView<StudentsController> {
           if (controller.users.isEmpty && controller.studentsCount == 0) {
             return Center(
               child: NoDataFoundWidget(
-                title: 'No students found',
-                message: 'Try adding student',
+                title: Strings.noStudentsFound.tr,
+                message: Strings.tryAddingStudent.tr,
                 icon: PhosphorIconsFill.student,
-                buttonText: 'Create Student',
+                buttonText: Strings.addStudent.tr,
                 action: () => Get.toNamed(Routes.createStudent),
               ),
             );
           }
 
           return RefreshIndicator(
-            onRefresh: () => controller.refreshData(),
+            onRefresh: () async {
+              return await controller.refreshData();
+            },
             child: Column(
               children: [
                 Container(
@@ -265,7 +270,7 @@ class StudentsView extends GetView<StudentsController> {
                               width: MediaQuery.of(context).size.width - 96,
                               child: MyTextFormField(
                                 controller: controller.search,
-                                hint: "Type to serach",
+                                hint: Strings.typeToSearch.tr,
                                 suffixIcon: PhosphorIconsBold.magnifyingGlass,
                                 onChanged: controller.onSearchChanged,
                               ),
@@ -345,6 +350,19 @@ class StudentsView extends GetView<StudentsController> {
                               ...controller.users.map<Widget>(
                                 (user) {
                                   return ListTile(
+                                    onTap: !controller.selectionEnabled
+                                        ? null
+                                        : () {
+                                            if (controller.selectedUsers
+                                                .contains(user)) {
+                                              controller.selectedUsers
+                                                  .remove(user);
+                                            } else {
+                                              controller.selectedUsers
+                                                  .add(user);
+                                            }
+                                            controller.update();
+                                          },
                                     contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 16),
                                     title: Text(user.name),
@@ -386,8 +404,9 @@ class StudentsView extends GetView<StudentsController> {
                                                     },
                                                     child: Text(
                                                       user.deleted == 1
-                                                          ? "No keep deleted"
-                                                          : "No, keep",
+                                                          ? Strings
+                                                              .noKeepDeleted.tr
+                                                          : Strings.noKeep.tr,
                                                     ),
                                                   ),
                                                   confirm: ElevatedButton(
@@ -396,17 +415,28 @@ class StudentsView extends GetView<StudentsController> {
                                                     },
                                                     child: Text(
                                                       user.deleted == 1
-                                                          ? "Yes, Restore"
-                                                          : "Yes, delete",
+                                                          ? Strings
+                                                              .yesRestore.tr
+                                                          : Strings
+                                                              .yesDelete.tr,
                                                     ),
                                                   ),
                                                   titleStyle: context
                                                       .textTheme.titleLarge,
                                                   title: user.deleted == 1
-                                                      ? "Restore Student"
-                                                      : "Delete Student?",
-                                                  middleText:
-                                                      "Are really want to ${user.deleted == 1 ? "restore" : "delete"} ${user.name}?",
+                                                      ? Strings
+                                                          .restoreStudent.tr
+                                                      : Strings
+                                                          .deleteStudent.tr,
+                                                  middleText: user.deleted == 0
+                                                      ? Strings
+                                                          .areYouSureDelete.tr
+                                                          .replaceAll("@name",
+                                                              user.name)
+                                                      : Strings
+                                                          .areYouSureRestore.tr
+                                                          .replaceAll("@name",
+                                                              user.name),
                                                   barrierDismissible: false,
                                                 );
 
@@ -443,20 +473,25 @@ class StudentsView extends GetView<StudentsController> {
                                                       Get.back(result: false);
                                                     },
                                                     child:
-                                                        const Text("No, keep"),
+                                                        Text(Strings.noKeep.tr),
                                                   ),
                                                   confirm: ElevatedButton(
                                                     onPressed: () {
                                                       Get.back(result: true);
                                                     },
-                                                    child: const Text(
-                                                        "Yes, delete"),
+                                                    child: Text(
+                                                        Strings.yesDelete.tr),
                                                   ),
                                                   titleStyle: context
                                                       .textTheme.titleLarge,
-                                                  title: "Delete Student?",
-                                                  middleText:
-                                                      "Are really want to delete ${user.name}? permenantly",
+                                                  title: Strings
+                                                      .deleteStudentPermanently
+                                                      .tr,
+                                                  middleText: Strings
+                                                      .confirmDeleteStudentPermanently
+                                                      .tr
+                                                      .replaceAll(
+                                                          "@name", user.name),
                                                   barrierDismissible: false,
                                                 );
 
@@ -468,14 +503,15 @@ class StudentsView extends GetView<StudentsController> {
                                             },
                                             itemBuilder: (context) {
                                               return [
-                                                const PopupMenuItem(
+                                                PopupMenuItem(
                                                   value: 1,
                                                   child: Row(
                                                     children: [
-                                                      Icon(PhosphorIconsBold
-                                                          .pencil),
-                                                      SizedBox(width: 8),
-                                                      Text("Edit"),
+                                                      const Icon(
+                                                          PhosphorIconsBold
+                                                              .pencil),
+                                                      const SizedBox(width: 8),
+                                                      Text(Strings.edit.tr),
                                                     ],
                                                   ),
                                                 ),
@@ -493,13 +529,13 @@ class StudentsView extends GetView<StudentsController> {
                                                       const SizedBox(width: 8),
                                                       Text(
                                                         user.deleted == 1
-                                                            ? "Restore"
-                                                            : "Delete",
+                                                            ? Strings.restore.tr
+                                                            : Strings.delete.tr,
                                                       ),
                                                     ],
                                                   ),
                                                 ),
-                                                const PopupMenuItem(
+                                                PopupMenuItem(
                                                   value: 3,
                                                   child: Row(
                                                     children: [
@@ -507,13 +543,13 @@ class StudentsView extends GetView<StudentsController> {
                                                         PhosphorIconsBold
                                                             .qrCode,
                                                       ),
-                                                      SizedBox(width: 8),
-                                                      Text("QR"),
+                                                      const SizedBox(width: 8),
+                                                      Text(Strings.qr.tr),
                                                     ],
                                                   ),
                                                 ),
                                                 if (controller.showDeleted)
-                                                  const PopupMenuItem(
+                                                  PopupMenuItem(
                                                     value: 4,
                                                     child: Row(
                                                       children: [
@@ -523,7 +559,9 @@ class StudentsView extends GetView<StudentsController> {
                                                         ),
                                                         SizedBox(width: 8),
                                                         Text(
-                                                          "Delete Permenantly",
+                                                          Strings
+                                                              .deletePermanently
+                                                              .tr,
                                                         ),
                                                       ],
                                                     ),
@@ -547,7 +585,17 @@ class StudentsView extends GetView<StudentsController> {
                                           if (controller.queryStudentsCount ==
                                               controller.studentsCount) {
                                             return Text(
-                                              "Showing ${controller.users.length} of ${controller.studentsCount} students",
+                                              Strings.showing.tr
+                                                  .replaceAll(
+                                                    "@count",
+                                                    controller.users.length
+                                                        .toString(),
+                                                  )
+                                                  .replaceAll(
+                                                    "@total",
+                                                    controller.studentsCount
+                                                        .toString(),
+                                                  ),
                                             );
                                           } else {
                                             return Column(
@@ -555,10 +603,26 @@ class StudentsView extends GetView<StudentsController> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  "Showing ${controller.users.length} of ${controller.queryStudentsCount} students",
+                                                  Strings.showing.tr
+                                                      .replaceAll(
+                                                        "@count",
+                                                        controller.users.length
+                                                            .toString(),
+                                                      )
+                                                      .replaceAll(
+                                                        "@total",
+                                                        controller
+                                                            .queryStudentsCount
+                                                            .toString(),
+                                                      ),
                                                 ),
                                                 Text(
-                                                  "Filtered from ${controller.studentsCount}",
+                                                  Strings.filteredFrom.tr
+                                                      .replaceAll(
+                                                    "@total",
+                                                    controller.studentsCount
+                                                        .toString(),
+                                                  ),
                                                   style: context
                                                       .textTheme.bodySmall,
                                                 ),
@@ -571,7 +635,7 @@ class StudentsView extends GetView<StudentsController> {
                                         builder: (_) {
                                           if (!controller.hasMoreData) {
                                             return Text(
-                                              "No More Data",
+                                              Strings.noMoreData.tr,
                                               style:
                                                   context.textTheme.bodySmall,
                                             );
@@ -591,7 +655,7 @@ class StudentsView extends GetView<StudentsController> {
                                           if (controller.hasMoreData) {
                                             return TextButton(
                                               onPressed: controller.loadMore,
-                                              child: const Text("Load More"),
+                                              child: Text(Strings.loadMore.tr),
                                             );
                                           }
 

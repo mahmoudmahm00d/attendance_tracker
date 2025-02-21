@@ -1,6 +1,8 @@
 import 'package:attendance_tracker/app/data/local/my_shared_pref.dart';
 import 'package:attendance_tracker/app/modules/preferences/controllers/preferences_controller.dart';
 import 'package:attendance_tracker/config/theme/my_theme.dart';
+import 'package:attendance_tracker/config/translations/localization_service.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -15,7 +17,7 @@ class PreferencesView extends GetView<PreferencesController> {
           icon: const Icon(PhosphorIconsBold.caretLeft),
           onPressed: Get.back,
         ),
-        title: const Text("Preferences"),
+        title: Text(Strings.preferences.tr),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -32,7 +34,8 @@ class PreferencesView extends GetView<PreferencesController> {
                     leading: themeIsLight
                         ? const Icon(PhosphorIconsFill.sun)
                         : const Icon(PhosphorIconsFill.moon),
-                    title: Text("Change to ${themeIsLight ? "Dark" : "Light"}"),
+                    title: Text(
+                        "${Strings.changeTo.tr} ${themeIsLight ? Strings.dark.tr : Strings.light.tr}"),
                     trailing: Switch(
                       value: themeIsLight,
                       onChanged: (_) {
@@ -44,23 +47,64 @@ class PreferencesView extends GetView<PreferencesController> {
                 },
               ),
               const SizedBox(height: 16),
+              GetBuilder<PreferencesController>(
+                builder: (_) {
+                  var isItEnglish = LocalizationService.isItEnglish();
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(PhosphorIconsFill.translate),
+                    title: Text(Strings.currentLanguage.tr),
+                    trailing: PopupMenuButton(
+                      onSelected: (value) {
+                        LocalizationService.updateLanguage(value);
+                        controller.update();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          !isItEnglish ? Strings.arabic.tr : Strings.english.tr,
+                          style: context.textTheme.bodyLarge,
+                        ),
+                      ),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: "ar",
+                          child: Text(Strings.arabic.tr),
+                        ),
+                        PopupMenuItem(
+                          value: "en",
+                          child: Text(Strings.english.tr),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
               Form(
                 key: controller.formKey,
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 0,
-                    // vertical: 16,
                   ),
                   leading: const Icon(PhosphorIconsBold.listBullets),
-                  title: const Text("Default Page Size"),
+                  title: Text(Strings.defaultPageSize.tr),
                   trailing: SizedBox(
                     height: 90,
                     width: 96,
                     child: TextFormField(
                       controller: controller.pageSizeController,
                       keyboardType: TextInputType.number,
-                      validator: (str) =>
-                          !GetUtils.isNum(str ?? "") ? "1..N" : null,
+                      validator: (str) => !GetUtils.isNum(str ?? "")
+                          ? Strings.numberValidation.tr
+                          : null,
                       onChanged: (_) {
                         if (!controller.formKey.currentState!.validate()) {
                           return;

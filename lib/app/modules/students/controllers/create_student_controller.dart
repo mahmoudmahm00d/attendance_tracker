@@ -4,6 +4,7 @@ import 'package:attendance_tracker/app/data/repositories/groups_repository.dart'
 import 'package:attendance_tracker/app/data/repositories/students_repository.dart';
 import 'package:attendance_tracker/app/modules/students/controllers/students_controller.dart';
 import 'package:attendance_tracker/app/services/database_execution_status.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:attendance_tracker/app/data/local/database_helper.dart';
@@ -51,8 +52,9 @@ class CreateStudentController extends GetxController {
     if (result != 0) {
       Get.back();
       CustomSnackBar.showCustomSnackBar(
-        title: "User added successfully",
-        message: "${user.name} Added successfully",
+        title: Strings.userAddedSuccessfully.tr,
+        message: Strings.usernameAddedSuccessfully.tr
+            .replaceFirst("@name", user.name),
       );
       Get.find<StudentsController>().getStudents();
     }

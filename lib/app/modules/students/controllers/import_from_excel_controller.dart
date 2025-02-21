@@ -5,6 +5,7 @@ import 'package:attendance_tracker/app/data/models/user.dart';
 import 'package:attendance_tracker/app/data/repositories/students_repository.dart';
 import 'package:attendance_tracker/app/services/database_execution_status.dart';
 import 'package:attendance_tracker/app/services/excel_service.dart' as excel;
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -37,15 +38,15 @@ class ImportFromExcelController extends GetxController {
     var status = await Permission.storage.request();
     if (!status.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Lack of permission",
-        message: "Please add storage permission",
+        title: Strings.lackOfPermission.tr,
+        message: Strings.addStoragePermission.tr,
       );
 
       return;
     }
 
     var pickedFile = await FilePicker.platform.pickFiles(
-      dialogTitle: "Select students excel file",
+      dialogTitle: Strings.selectExcelFile.tr,
       allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: ["xlsx"],
@@ -63,8 +64,8 @@ class ImportFromExcelController extends GetxController {
   import() async {
     if (filePath == null) {
       Get.snackbar(
-        "File is required",
-        "Please select file first",
+        Strings.fileIsRequired.tr,
+        Strings.pleaseSelectExcelFile.tr,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
@@ -95,8 +96,8 @@ class ImportFromExcelController extends GetxController {
 
     if (usersAdded == 0) {
       Get.snackbar(
-        "No users added",
-        "No users found",
+        Strings.noStudentAdded.tr,
+        Strings.noStudentFound.tr,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
@@ -106,8 +107,9 @@ class ImportFromExcelController extends GetxController {
 
     Get.back();
     Get.snackbar(
-      "Users added successfully",
-      "$usersAdded added successfully",
+      Strings.userAddedSuccessfully.tr,
+      Strings.countStudentsAddedSuccessfully.tr
+          .replaceFirst("@count", usersAdded.toString()),
       backgroundColor: Colors.green,
       colorText: Colors.white,
     );

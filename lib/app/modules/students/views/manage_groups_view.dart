@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/app/modules/students/controllers/students_controller.dart';
 import 'package:attendance_tracker/app/services/database_execution_status.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,19 +12,18 @@ class ManageGroupsView extends GetView<StudentsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Groups')),
+      appBar: AppBar(title: Text(Strings.manageGroups.tr)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
               Text(
-                "Important Notice",
+                Strings.importantNotice.tr,
                 style: context.textTheme.bodyLarge!
                     .copyWith(color: context.theme.primaryColor),
               ),
-              const Text(
-                  "After save changes all student groups will be overwriten."),
+              Text(Strings.groupsOverwriteNotice.tr),
               const SizedBox(height: 16),
               GetBuilder<StudentsController>(
                 builder: (context) {
@@ -33,7 +33,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Primary Group"),
+                          Text(Strings.primaryGroup.tr),
                           const SizedBox(height: 4),
                           TextFormField(
                             controller: searchController,
@@ -60,7 +60,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                                         child: Icon(PhosphorIconsBold.x),
                                       ),
                                     ),
-                              hintText: 'Select Group',
+                              hintText: Strings.selectGroup.tr,
                             ),
                             onTap: () {
                               if (controller.loadingGroupsQueryStatus ==
@@ -99,7 +99,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Show in Groups"),
+                          Text(Strings.showInGroups.tr),
                           const SizedBox(height: 4),
                           TextFormField(
                             onSaved: (_) {
@@ -117,7 +117,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                                   : const Icon(
                                       PhosphorIconsBold.magnifyingGlass,
                                     ),
-                              hintText: 'Search for a group',
+                              hintText: Strings.searchForGroup.tr,
                             ),
                             onTap: () {
                               if (controller.loadingGroupsQueryStatus ==
@@ -196,7 +196,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                       ).toList(),
                     );
                   }
-                  return const Text("No selected groups");
+                  return Text(Strings.noSelectedGroups.tr);
                 },
               ),
               const SizedBox(height: 16),
@@ -209,7 +209,7 @@ class ManageGroupsView extends GetView<StudentsController> {
                       padding: const EdgeInsets.all(8),
                       child: GetBuilder<StudentsController>(
                         builder: (_) {
-                          return const Text("Save Changes");
+                          return Text(Strings.saveChanges.tr);
                         },
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class LandingView extends GetView<LandingController> {
   const LandingView({super.key});
@@ -57,13 +58,14 @@ class LandingView extends GetView<LandingController> {
                     child: Image.asset("assets/images/app_icon.png"),
                   ),
                   const SizedBox(height: 160),
+                  // First page texts
                   Text(
-                    "Welcom to Attendance Tracker",
+                    Strings.welcomeTitle.tr,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Basic attendnace app to track your students",
+                  Text(
+                    Strings.welcomeDescription.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -72,7 +74,7 @@ class LandingView extends GetView<LandingController> {
                     children: [
                       ElevatedButton(
                         onPressed: controller.nextPage,
-                        child: const Text("Next"),
+                        child: Text(Strings.next.tr),
                       ),
                     ],
                   ),
@@ -100,12 +102,12 @@ class LandingView extends GetView<LandingController> {
                   ),
                   const SizedBox(height: 140),
                   Text(
-                    "Easy Import",
+                    Strings.easyImportTitle.tr,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Import your students easily using excel file with just name and father name",
+                  Text(
+                    Strings.easyImportDescription.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -114,11 +116,11 @@ class LandingView extends GetView<LandingController> {
                     children: [
                       TextButton(
                         onPressed: controller.previousPage,
-                        child: const Text("Previous"),
+                        child: Text(Strings.previous.tr),
                       ),
                       ElevatedButton(
                         onPressed: controller.nextPage,
-                        child: const Text("Next"),
+                        child: Text(Strings.next.tr),
                       ),
                     ],
                   ),
@@ -144,12 +146,12 @@ class LandingView extends GetView<LandingController> {
                   ),
                   const SizedBox(height: 140),
                   Text(
-                    "QR codes Generator",
+                    Strings.qrGeneratorTitle.tr,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Export a PDF contains your students ids in QR code format with just one click",
+                  Text(
+                    Strings.qrGeneratorDescription.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -158,11 +160,11 @@ class LandingView extends GetView<LandingController> {
                     children: [
                       TextButton(
                         onPressed: controller.previousPage,
-                        child: const Text("Previous"),
+                        child: Text(Strings.previous.tr),
                       ),
                       ElevatedButton(
                         onPressed: controller.nextPage,
-                        child: const Text("Next"),
+                        child: Text(Strings.next.tr),
                       ),
                     ],
                   ),
@@ -188,12 +190,12 @@ class LandingView extends GetView<LandingController> {
                   ),
                   const SizedBox(height: 120),
                   Text(
-                    "QR attendance",
+                    Strings.qrAttendanceTitle.tr,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Add attendances by scanning student's QR code with auto save to easy add multiple attendances with ease",
+                  Text(
+                    Strings.qrAttendanceDescription.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -202,11 +204,11 @@ class LandingView extends GetView<LandingController> {
                     children: [
                       TextButton(
                         onPressed: controller.previousPage,
-                        child: const Text("Previous"),
+                        child: Text(Strings.previous.tr),
                       ),
                       ElevatedButton(
                         onPressed: controller.nextPage,
-                        child: const Text("Next"),
+                        child: Text(Strings.next.tr),
                       ),
                     ],
                   ),
@@ -232,12 +234,12 @@ class LandingView extends GetView<LandingController> {
                   ),
                   const SizedBox(height: 140),
                   Text(
-                    "Export your data",
+                    Strings.exportDataTitle.tr,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Easily export your data to an excel format, or just export the whole database!",
+                  Text(
+                    Strings.exportDataDescription.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -246,11 +248,11 @@ class LandingView extends GetView<LandingController> {
                     children: [
                       TextButton(
                         onPressed: controller.previousPage,
-                        child: const Text("Previous"),
+                        child: Text(Strings.previous.tr),
                       ),
                       ElevatedButton(
                         onPressed: controller.nextPage,
-                        child: const Text("Next"),
+                        child: Text(Strings.next.tr),
                       ),
                     ],
                   ),
@@ -276,42 +278,42 @@ class LandingView extends GetView<LandingController> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "And more and more to explore",
+                    Strings.moreToExploreTitle.tr,
                     style: context.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "* Linear group management",
+                  Text(
+                    Strings.linearGroupManagement.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "* Soft delete",
+                  Text(
+                    Strings.softDelete.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "* Generate attendance report",
+                  Text(
+                    Strings.generateReport.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "* Bulk operation",
+                  Text(
+                    Strings.bulkOperation.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "* Data insights",
+                  Text(
+                    Strings.dataInsights.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "and more...",
+                  Text(
+                    Strings.andMore.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Let's get started",
+                  Text(
+                    Strings.letsGetStarted.tr,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -320,11 +322,11 @@ class LandingView extends GetView<LandingController> {
                     children: [
                       TextButton(
                         onPressed: controller.previousPage,
-                        child: const Text("Previous"),
+                        child: Text(Strings.previous.tr),
                       ),
                       ElevatedButton(
                         onPressed: () => Get.offNamed(Routes.home),
-                        child: const Text("Done"),
+                        child: Text(Strings.done.tr),
                       ),
                     ],
                   ),

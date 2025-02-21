@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:attendance_tracker/app/components/my_text_form_field.dart';
 import 'package:attendance_tracker/app/modules/subjects/controllers/create_subject_controller.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class CreateSubjectView extends GetView<CreateSubjectController> {
   const CreateSubjectView({super.key});
@@ -15,9 +16,9 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
           icon: const Icon(PhosphorIconsBold.caretLeft),
           onPressed: Get.back,
         ),
-        title: (controller.isEdit)
-            ? const Text('Edit Subject')
-            : const Text('Create Subject'),
+        title: Text(
+          controller.isEdit ? Strings.editSubject.tr : Strings.createSubject.tr,
+        ),
         centerTitle: true,
       ),
       body: GetBuilder<CreateSubjectController>(
@@ -32,11 +33,11 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                   const SizedBox(height: 16),
                   MyTextFormField(
                     controller: controller.nameController,
-                    heading: "Name",
+                    heading: Strings.subjectName.tr,
                     hint: "Programming",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter subject name";
+                        return Strings.enterSubjectName.tr;
                       }
                       return null;
                     },
@@ -49,13 +50,13 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Primary Group"),
+                          Text(Strings.primaryGroup.tr),
                           const SizedBox(height: 4),
                           TextFormField(
                             controller: searchController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Please select group";
+                                return Strings.pleaseSelectGroup.tr;
                               }
                               return null;
                             },
@@ -75,7 +76,7 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                                         child: Icon(PhosphorIconsBold.x),
                                       ),
                                     ),
-                              hintText: 'Select Group',
+                              hintText: Strings.selectGroup.tr,
                             ),
                             onTap: searchController.openView,
                           ),
@@ -104,13 +105,13 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Imprtant Notice",
+                        Strings.importantNotice.tr,
                         style: context.textTheme.bodyLarge!
                             .copyWith(color: context.theme.primaryColor),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "This subject can only add attendance to students with the same selected primary group or any member in it",
+                        Strings.subjectGroupNotice.tr,
                         style: context.textTheme.bodySmall,
                       ),
                     ],
@@ -129,8 +130,8 @@ class CreateSubjectView extends GetView<CreateSubjectController> {
                             padding: const EdgeInsets.all(8),
                             child: Text(
                               controller.isEdit
-                                  ? 'Update Subject'
-                                  : 'Create Subject',
+                                  ? Strings.updateSubject.tr
+                                  : Strings.createSubject.tr,
                             ),
                           ),
                         ),

@@ -6,6 +6,7 @@ import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:attendance_tracker/app/components/no_data_found_widget.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 import '../controllers/subjects_controller.dart';
 
@@ -22,9 +23,9 @@ class SubjectsView extends GetView<SubjectsController> {
         title: GetBuilder<SubjectsController>(
           builder: (_) {
             if (controller.group != null) {
-              return Text("${controller.group!.name}'s Subjects");
+              return Text("${controller.group!.name}${Strings.subjectsOf.tr}");
             }
-            return const Text('Subjects');
+            return Text(Strings.subjects.tr);
           },
         ),
         centerTitle: true,
@@ -42,13 +43,13 @@ class SubjectsView extends GetView<SubjectsController> {
                 itemBuilder: (context) {
                   if (controller.showDeleted) {
                     return [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           children: [
-                            Icon(PhosphorIconsBold.trash),
-                            SizedBox(width: 8),
-                            Text("Show Non-Deleted"),
+                            const Icon(PhosphorIconsBold.trash),
+                            const SizedBox(width: 8),
+                            Text(Strings.showNonDeleted.tr),
                           ],
                         ),
                       ),
@@ -56,13 +57,13 @@ class SubjectsView extends GetView<SubjectsController> {
                   }
 
                   return [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 1,
                       child: Row(
                         children: [
-                          Icon(PhosphorIconsBold.trash),
-                          SizedBox(width: 8),
-                          Text("Show Deleted"),
+                          const Icon(PhosphorIconsBold.trash),
+                          const SizedBox(width: 8),
+                          Text(Strings.showDeleted.tr),
                         ],
                       ),
                     ),
@@ -89,15 +90,15 @@ class SubjectsView extends GetView<SubjectsController> {
                 return Center(
                   child: NoDataFoundWidget(
                     title: controller.showDeleted
-                        ? 'No deleted subject found'
-                        : 'No subjects found',
+                        ? Strings.noDeletedSubject.tr
+                        : Strings.noSubjectsFound.tr,
                     message: controller.showDeleted
-                        ? 'Deleted subject to show here'
-                        : 'Try adding subject',
+                        ? Strings.deletedSubjectToShow.tr
+                        : Strings.tryAddingSubject.tr,
                     icon: PhosphorIconsFill.books,
                     buttonText: controller.showDeleted
-                        ? 'Show Non-Deleted'
-                        : 'Create Subject',
+                        ? Strings.showNonDeleted.tr
+                        : Strings.createSubject.tr,
                     action: () => controller.showDeleted
                         ? controller.toggleShowDeleted()
                         : Get.toNamed(Routes.createSubject),
@@ -106,8 +107,9 @@ class SubjectsView extends GetView<SubjectsController> {
               }
 
               return RefreshIndicator(
-                onRefresh: () =>
-                    controller.getSubjects(group: controller.group),
+                onRefresh: () async {
+                  return await controller.getSubjects(group: controller.group);
+                },
                 child: SingleChildScrollView(
                   child: Column(
                     children: controller.subjects.map<Widget>(
@@ -134,8 +136,8 @@ class SubjectsView extends GetView<SubjectsController> {
                                     },
                                     child: Text(
                                       subject.deleted == 1
-                                          ? "No keep deleted"
-                                          : "No, keep",
+                                          ? Strings.noKeepDeleted.tr
+                                          : Strings.noKeep.tr,
                                     ),
                                   ),
                                   confirm: ElevatedButton(
@@ -144,16 +146,21 @@ class SubjectsView extends GetView<SubjectsController> {
                                     },
                                     child: Text(
                                       subject.deleted == 1
-                                          ? "Yes, Restore"
-                                          : "Yes, delete",
+                                          ? Strings.yesRestore.tr
+                                          : Strings.yesDelete.tr,
                                     ),
                                   ),
                                   titleStyle: context.textTheme.titleLarge,
                                   title: subject.deleted == 1
-                                      ? "Restore Subject"
-                                      : "Delete Subject?",
-                                  middleText:
-                                      "Are really want to ${subject.deleted == 1 ? "restore" : "delete"} ${subject.name}?",
+                                      ? Strings.restoreSubject.tr
+                                      : Strings.deleteSubject.tr,
+                                  middleText: Strings.confirmDeleteRestore.tr
+                                      .replaceAll(
+                                          '@action',
+                                          subject.deleted == 1
+                                              ? 'restore'
+                                              : 'delete')
+                                      .replaceAll('@name', subject.name),
                                   barrierDismissible: false,
                                 );
 
@@ -171,8 +178,8 @@ class SubjectsView extends GetView<SubjectsController> {
                                 var status = await Permission.camera.request();
                                 if (!status.isGranted) {
                                   CustomSnackBar.showCustomErrorSnackBar(
-                                    title: "Lack of permission",
-                                    message: "Please add camera permission",
+                                    title: Strings.lackOfPermission.tr,
+                                    message: Strings.addCameraPermission.tr,
                                   );
 
                                   return;
@@ -189,18 +196,19 @@ class SubjectsView extends GetView<SubjectsController> {
                                     onPressed: () {
                                       Get.back(result: false);
                                     },
-                                    child: const Text("No, keep"),
+                                    child: Text(Strings.noKeep.tr),
                                   ),
                                   confirm: ElevatedButton(
                                     onPressed: () {
                                       Get.back(result: true);
                                     },
-                                    child: const Text("Yes, delete"),
+                                    child: Text(Strings.yesDelete.tr),
                                   ),
                                   titleStyle: context.textTheme.titleLarge,
-                                  title: "Delete Subject Permenantly",
-                                  middleText:
-                                      "Are really want to delete ${subject.name}?",
+                                  title: Strings.deleteSubjectPermanently.tr,
+                                  middleText: Strings
+                                      .confirmDeleteSubjectPermanently.tr
+                                      .replaceAll('@name', subject.name),
                                   barrierDismissible: false,
                                 );
 
@@ -209,13 +217,13 @@ class SubjectsView extends GetView<SubjectsController> {
                             },
                             itemBuilder: (context) {
                               return [
-                                const PopupMenuItem(
+                                PopupMenuItem(
                                   value: 1,
                                   child: Row(
                                     children: [
-                                      Icon(PhosphorIconsBold.pencil),
-                                      SizedBox(width: 8),
-                                      Text("Edit"),
+                                      const Icon(PhosphorIconsBold.pencil),
+                                      const SizedBox(width: 8),
+                                      Text(Strings.edit.tr),
                                     ],
                                   ),
                                 ),
@@ -232,42 +240,44 @@ class SubjectsView extends GetView<SubjectsController> {
                                       const SizedBox(width: 8),
                                       Text(
                                         subject.deleted == 1
-                                            ? "Restore"
-                                            : "Delete",
+                                            ? Strings.restore.tr
+                                            : Strings.delete.tr,
                                       ),
                                     ],
                                   ),
                                 ),
                                 if (subject.deleted == 1)
-                                  const PopupMenuItem(
+                                  PopupMenuItem(
                                     value: 5,
                                     child: Row(
                                       children: [
-                                        Icon(PhosphorIconsBold.trash),
-                                        SizedBox(width: 8),
-                                        Text("Delete Permenantly"),
+                                        const Icon(PhosphorIconsBold.trash),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          Strings.deleteSubjectPermanently.tr,
+                                        ),
                                       ],
                                     ),
                                   ),
                                 if (subject.deleted == 0)
-                                  const PopupMenuItem(
+                                  PopupMenuItem(
                                     value: 3,
                                     child: Row(
                                       children: [
-                                        Icon(PhosphorIconsBold.table),
-                                        SizedBox(width: 8),
-                                        Text("Attendance"),
+                                        const Icon(PhosphorIconsBold.table),
+                                        const SizedBox(width: 8),
+                                        Text(Strings.attendance.tr),
                                       ],
                                     ),
                                   ),
                                 if (subject.deleted == 0)
-                                  const PopupMenuItem(
+                                  PopupMenuItem(
                                     value: 4,
                                     child: Row(
                                       children: [
-                                        Icon(PhosphorIconsBold.qrCode),
-                                        SizedBox(width: 8),
-                                        Text("Take Attendance"),
+                                        const Icon(PhosphorIconsBold.qrCode),
+                                        const SizedBox(width: 8),
+                                        Text(Strings.takeAttendance.tr),
                                       ],
                                     ),
                                   ),
@@ -284,7 +294,15 @@ class SubjectsView extends GetView<SubjectsController> {
                           height: 60,
                           child: Center(
                             child: Text(
-                              "Showing ${controller.subjects.length} of ${controller.subjects.length} subjects",
+                              Strings.showingSubjects.tr
+                                  .replaceAll(
+                                    '@count',
+                                    controller.subjects.length.toString(),
+                                  )
+                                  .replaceAll(
+                                    '@total',
+                                    controller.subjects.length.toString(),
+                                  ),
                             ),
                           ),
                         ),

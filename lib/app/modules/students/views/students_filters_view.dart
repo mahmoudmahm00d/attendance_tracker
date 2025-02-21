@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/app/modules/students/controllers/students_controller.dart';
 import 'package:attendance_tracker/app/services/database_execution_status.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ class StudentsFiltersView extends GetView<StudentsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Filters')),
+      appBar: AppBar(title: Text(Strings.filters.tr)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -25,7 +26,7 @@ class StudentsFiltersView extends GetView<StudentsController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Groups"),
+                          Text(Strings.groups.tr),
                           const SizedBox(height: 4),
                           TextFormField(
                             controller: searchController,
@@ -40,7 +41,7 @@ class StudentsFiltersView extends GetView<StudentsController> {
                                   : const Icon(
                                       PhosphorIconsBold.magnifyingGlass,
                                     ),
-                              hintText: 'Search for a group',
+                              hintText: Strings.searchForGroup.tr,
                             ),
                             onTap: () {
                               if (controller.loadingGroupsQueryStatus ==
@@ -118,7 +119,7 @@ class StudentsFiltersView extends GetView<StudentsController> {
                       ).toList(),
                     );
                   }
-                  return const Text("No selected groups");
+                  return Text(Strings.noSelectedGroups.tr);
                 },
               ),
               const SizedBox(height: 16),
@@ -132,7 +133,7 @@ class StudentsFiltersView extends GetView<StudentsController> {
                             controller.onShowDeleted(showDeleted),
                       ),
                       const SizedBox(width: 8),
-                      const Text("Show Deleted")
+                      Text(Strings.showDeleted.tr)
                     ],
                   );
                 },
@@ -143,9 +144,9 @@ class StudentsFiltersView extends GetView<StudentsController> {
                   width: context.width - 32,
                   child: ElevatedButton(
                     onPressed: () => controller.applyFilters(goBack: true),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text("Apply Filters"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(Strings.applyFilters.tr),
                     ),
                   ),
                 ),
@@ -158,9 +159,9 @@ class StudentsFiltersView extends GetView<StudentsController> {
                     builder: (_) {
                       return TextButton(
                         onPressed: () => controller.removeFilters(goBack: true),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8),
-                          child: Text("Remove Filters"),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(Strings.removeFilters.tr),
                         ),
                       );
                     },

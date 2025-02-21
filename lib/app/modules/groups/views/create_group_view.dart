@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:attendance_tracker/app/components/my_text_form_field.dart';
 import 'package:attendance_tracker/app/modules/groups/controllers/create_group_controller.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class CreateGroupView extends GetView<CreateGroupController> {
   const CreateGroupView({super.key});
@@ -15,9 +16,9 @@ class CreateGroupView extends GetView<CreateGroupController> {
           icon: const Icon(PhosphorIconsBold.caretLeft),
           onPressed: Get.back,
         ),
-        title: (controller.isEdit)
-            ? const Text('Edit Group')
-            : const Text('Create Group'),
+        title: Text(
+          controller.isEdit ? Strings.editGroup.tr : Strings.createGroup.tr,
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -28,8 +29,8 @@ class CreateGroupView extends GetView<CreateGroupController> {
             const SizedBox(height: 16),
             MyTextFormField(
               controller: controller.nameController,
-              heading: "Name",
-              hint: "Programming",
+              heading: Strings.groupName.tr,
+              hint: Strings.groupNameHint.tr,
             ),
             const Spacer(),
             Center(
@@ -41,7 +42,9 @@ class CreateGroupView extends GetView<CreateGroupController> {
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Text(
-                      controller.isEdit ? 'Update Group' : 'Create Group',
+                      controller.isEdit
+                          ? Strings.updateGroup.tr
+                          : Strings.createGroup.tr,
                     ),
                   ),
                 ),

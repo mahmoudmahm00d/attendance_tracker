@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:attendance_tracker/app/components/no_data_found_widget.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 import '../controllers/attendance_controller.dart';
 
@@ -24,12 +25,14 @@ class AttendancesView extends GetView<AttendanceController> {
         ),
         title: GetBuilder<AttendanceController>(builder: (_) {
           if (controller.selectionEnabled) {
-            return Text("${controller.selectedAttendance.length} Selected");
+            return Text(Strings.selected.tr.replaceAll(
+                '@count', controller.selectedAttendance.length.toString()));
           }
           if (controller.subject != null) {
-            return Text("${controller.subject!.name}'s Attendances");
+            return Text(Strings.attendancesOf.tr
+                .replaceAll('@name', controller.subject!.name));
           }
-          return const Text('Attendances');
+          return Text(Strings.attendances.tr);
         }),
         centerTitle: true,
         actions: [
@@ -69,15 +72,13 @@ class AttendancesView extends GetView<AttendanceController> {
             itemBuilder: (context) {
               return [
                 if (!controller.selectionEnabled)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: "ExportExcel",
                     child: Row(
                       children: [
-                        Icon(PhosphorIconsBold.fileXls),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Text("Generate Report"),
+                        const Icon(PhosphorIconsBold.fileXls),
+                        const SizedBox(width: 4),
+                        Text(Strings.generateReport.tr),
                       ],
                     ),
                   ),
@@ -90,13 +91,11 @@ class AttendancesView extends GetView<AttendanceController> {
                             ? PhosphorIconsBold.selectionSlash
                             : PhosphorIconsBold.selection,
                       ),
-                      const SizedBox(
-                        width: 4,
-                      ),
+                      const SizedBox(width: 4),
                       Text(
                         controller.selectionEnabled
-                            ? "Remove Selection"
-                            : "Select Students",
+                            ? Strings.removeSelection.tr
+                            : Strings.selectStudentsForAttendance.tr,
                       ),
                     ],
                   ),
@@ -135,8 +134,8 @@ class AttendancesView extends GetView<AttendanceController> {
                     onPressed: () async {
                       if (controller.selectedAttendance.isEmpty) {
                         CustomSnackBar.showCustomErrorSnackBar(
-                          title: "No user selected",
-                          message: "You must select at least one users",
+                          title: Strings.noUserSelected.tr,
+                          message: Strings.mustSelectOneUser.tr,
                         );
                         return;
                       }
@@ -146,12 +145,15 @@ class AttendancesView extends GetView<AttendanceController> {
                         initialDate: DateTime.now(),
                         firstDate: DateTime(2000),
                         lastDate: DateTime.now(),
-                        helpText:
-                            'Select your date to add to ${controller.selectedAttendance.length} students', // Custom title
-                        cancelText: 'Cancel', // Custom cancel button text
-                        confirmText: 'Select', // Custom confirm button text
-                        errorFormatText: 'Invalid date', // Custom error message
-                        errorInvalidText: 'Date out of range',
+                        helpText: Strings.selectDateFor.tr.replaceAll('@count',
+                            controller.selectedAttendance.length.toString()),
+                        cancelText:
+                            Strings.cancel.tr, // Custom cancel button text
+                        confirmText:
+                            Strings.select.tr, // Custom confirm button text
+                        errorFormatText:
+                            Strings.invalidDate.tr, // Custom error message
+                        errorInvalidText: Strings.dateOutOfRange.tr,
                       );
                       if (date != null) {
                         await controller.addAttendances(date);
@@ -198,10 +200,10 @@ class AttendancesView extends GetView<AttendanceController> {
               controller.attendance.isEmpty) {
             return Center(
               child: NoDataFoundWidget(
-                title: 'No Attendances found',
-                message: 'Try adding Attendance',
+                title: Strings.noAttendancesFound.tr,
+                message: Strings.tryAddingAttendance.tr,
                 icon: PhosphorIconsFill.calendarBlank,
-                buttonText: 'Create Attendance',
+                buttonText: Strings.createAttendance.tr,
                 action: () {}, //=> Get.toNamed(Routes.createAttendance),
               ),
             );
@@ -243,7 +245,7 @@ class AttendancesView extends GetView<AttendanceController> {
                                         width: context.width - 32,
                                         child: MyTextFormField(
                                           controller: controller.search,
-                                          hint: "Type to serach",
+                                          hint: Strings.typeToSearch.tr,
                                           suffixIcon:
                                               PhosphorIconsBold.magnifyingGlass,
                                           onChanged: controller.onSearchChanged,
@@ -313,33 +315,33 @@ class AttendancesView extends GetView<AttendanceController> {
                                 ...controller.attendance.map<Widget>(
                                   (attendance) {
                                     return ListTile(
-                                      onTap: () {
-                                        if (!controller.selectionEnabled) {
-                                          return;
-                                        }
-                                        if (controller.selectedAttendance
-                                            .contains(attendance)) {
-                                          controller.selectedAttendance
-                                              .remove(attendance);
-                                        } else {
-                                          controller.selectedAttendance
-                                              .add(attendance);
-                                        }
-                                        controller.update();
-                                      },
+                                      onTap: !controller.selectionEnabled
+                                          ? null
+                                          : () {
+                                              if (controller.selectedAttendance
+                                                  .contains(attendance)) {
+                                                controller.selectedAttendance
+                                                    .remove(attendance);
+                                              } else {
+                                                controller.selectedAttendance
+                                                    .add(attendance);
+                                              }
+                                              controller.update();
+                                            },
                                       contentPadding: const EdgeInsets.all(0),
                                       title: Text(attendance.name),
                                       subtitle: Row(
                                         children: [
-                                          const Text("attended "),
+                                          Text(Strings.attended.tr),
                                           Text(
-                                            "${attendance.count}",
+                                            " ${attendance.count}",
                                             style: context.textTheme.bodyLarge!
                                                 .copyWith(
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                              fontWeight: FontWeight.w600,
+                                              color: context.theme.primaryColor,
+                                            ),
                                           ),
-                                          const Text(" of "),
+                                          Text(" ${Strings.of.tr} "),
                                           Text(
                                             "${controller.attendanceCount}",
                                           ),
@@ -393,15 +395,15 @@ class AttendancesView extends GetView<AttendanceController> {
                                                     firstDate: DateTime(2000),
                                                     lastDate: DateTime.now(),
                                                     helpText:
-                                                        'Select your date', // Custom title
+                                                        Strings.selectDate.tr,
                                                     cancelText:
-                                                        'Cancel', // Custom cancel button text
+                                                        Strings.cancel.tr,
                                                     confirmText:
-                                                        'Select', // Custom confirm button text
+                                                        Strings.select.tr,
                                                     errorFormatText:
-                                                        'Invalid date', // Custom error message
-                                                    errorInvalidText:
-                                                        'Date out of range',
+                                                        Strings.invalidDate.tr,
+                                                    errorInvalidText: Strings
+                                                        .dateOutOfRange.tr,
                                                   );
 
                                                   if (date != null) {
@@ -413,25 +415,31 @@ class AttendancesView extends GetView<AttendanceController> {
                                               },
                                               itemBuilder: (context) {
                                                 return [
-                                                  const PopupMenuItem(
+                                                  PopupMenuItem(
                                                     value: 1,
                                                     child: Row(
                                                       children: [
-                                                        Icon(PhosphorIconsBold
-                                                            .table),
-                                                        SizedBox(width: 8),
-                                                        Text("Attendance"),
+                                                        const Icon(
+                                                            PhosphorIconsBold
+                                                                .table),
+                                                        const SizedBox(
+                                                            width: 8),
+                                                        Text(Strings
+                                                            .attendances.tr),
                                                       ],
                                                     ),
                                                   ),
-                                                  const PopupMenuItem(
+                                                  PopupMenuItem(
                                                     value: 2,
                                                     child: Row(
                                                       children: [
-                                                        Icon(PhosphorIconsBold
-                                                            .calendarBlank),
-                                                        SizedBox(width: 8),
-                                                        Text("Add Attendance"),
+                                                        const Icon(
+                                                            PhosphorIconsBold
+                                                                .calendarBlank),
+                                                        const SizedBox(
+                                                            width: 8),
+                                                        Text(Strings
+                                                            .addAttendance.tr),
                                                       ],
                                                     ),
                                                   ),
@@ -454,17 +462,42 @@ class AttendancesView extends GetView<AttendanceController> {
                                             if (controller.queryCount ==
                                                 controller.studentsCount) {
                                               return Text(
-                                                  "Showing ${controller.attendance.length} of ${controller.studentsCount} students");
+                                                Strings.showing.tr
+                                                    .replaceAll(
+                                                        "@count",
+                                                        controller.studentsCount
+                                                            .toString())
+                                                    .replaceAll(
+                                                        "@total",
+                                                        controller.studentsCount
+                                                            .toString()),
+                                              );
                                             } else {
                                               return Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
-                                                    "Showing ${controller.attendance.length} of ${controller.queryCount} students",
+                                                    Strings.showing.tr
+                                                        .replaceAll(
+                                                            "@count",
+                                                            controller
+                                                                .attendance
+                                                                .length
+                                                                .toString())
+                                                        .replaceAll(
+                                                            "@total",
+                                                            controller
+                                                                .queryCount
+                                                                .toString()),
                                                   ),
                                                   Text(
-                                                    "Filtered from ${controller.studentsCount}",
+                                                    Strings.filteredFrom.tr
+                                                        .replaceAll(
+                                                            "@total",
+                                                            controller
+                                                                .studentsCount
+                                                                .toString()),
                                                     style: context
                                                         .textTheme.bodySmall,
                                                   ),
@@ -477,7 +510,7 @@ class AttendancesView extends GetView<AttendanceController> {
                                           builder: (_) {
                                             if (!controller.hasMoreData) {
                                               return Text(
-                                                "No More Data",
+                                                Strings.noMoreData.tr,
                                                 style:
                                                     context.textTheme.bodySmall,
                                               );
@@ -499,7 +532,8 @@ class AttendancesView extends GetView<AttendanceController> {
                                             if (controller.hasMoreData) {
                                               return TextButton(
                                                 onPressed: controller.loadMore,
-                                                child: const Text("Load More"),
+                                                child:
+                                                    Text(Strings.loadMore.tr),
                                               );
                                             }
 

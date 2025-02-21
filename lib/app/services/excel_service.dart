@@ -81,7 +81,7 @@ List<int>? generateStudentsFile(List<User> users) {
 List<int>? generateAttendanceReport(
   String subjectName,
   int maxAttendanceCount,
-  List<String> dates,
+  List<(String, int)> dates,
   List<UserAttendance> attendance,
 ) {
   var excel = Excel.createExcel();
@@ -109,6 +109,8 @@ List<int>? generateAttendanceReport(
       TextCellValue("Lecture");
   sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: 2)).value =
       TextCellValue("At");
+  sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: 2)).value =
+      TextCellValue("Attendance");
 
   for (var i = 0; i < dates.length; i++) {
     sheet
@@ -116,7 +118,10 @@ List<int>? generateAttendanceReport(
         .value = TextCellValue((i + 1).toString().padLeft(3, "0"));
     sheet
         .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: i + 3))
-        .value = TextCellValue(dates[i]);
+        .value = TextCellValue(dates[i].$1);
+    sheet
+        .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: i + 3))
+        .value = TextCellValue(dates[i].$2.toString());
   }
 
   sheet

@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/app/modules/attendance/controllers/attendance_controller.dart';
 import 'package:attendance_tracker/app/services/database_execution_status.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,7 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Filters')),
+      appBar: AppBar(title: Text(Strings.filters.tr)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -25,7 +26,7 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Groups"),
+                          Text(Strings.groups.tr),
                           const SizedBox(height: 4),
                           TextFormField(
                             controller: searchController,
@@ -40,7 +41,7 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                                   : const Icon(
                                       PhosphorIconsBold.magnifyingGlass,
                                     ),
-                              hintText: 'Search for a group',
+                              hintText: Strings.selectGroup.tr,
                             ),
                             onTap: () {
                               if (controller.loadingGroups.value ==
@@ -116,7 +117,7 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                       ).toList(),
                     );
                   }
-                  return const Text("No selected groups");
+                  return Text(Strings.noSelectedGroups.tr);
                 },
               ),
               const SizedBox(height: 16),
@@ -128,17 +129,26 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                       onChanged: (v) => controller.onNonZeroAttendance(v),
                     ),
                     const SizedBox(width: 8),
-                    const Text("Non Zero")
+                    Text(Strings.nonZeroAttendance.tr)
                   ],
                 );
               }),
               const SizedBox(height: 16),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Dates"),
+              Row(
+                children: [
+                  Text(Strings.dates.tr),
+                ],
               ),
               GetBuilder<AttendanceController>(
                 builder: (_) {
+                  if (controller.dates.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [Icon(PhosphorIconsBold.calendarSlash)],
+                      ),
+                    );
+                  }
                   return Column(
                     children: [
                       for (var date in controller.dates)
@@ -149,8 +159,7 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                               onChanged: (v) {
                                 if (controller.selectedDates.contains(date)) {
                                   controller.selectedDates.remove(date);
-                                }
-                                else {
+                                } else {
                                   controller.selectedDates.add(date);
                                 }
 
@@ -171,9 +180,9 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                   width: context.width - 32,
                   child: ElevatedButton(
                     onPressed: () => controller.applyFilters(goBack: true),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text("Apply Filters"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(Strings.applyFilters.tr),
                     ),
                   ),
                 ),
@@ -185,9 +194,9 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                     width: context.width - 32,
                     child: TextButton(
                       onPressed: () => controller.removeFilters(goBack: true),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text("Remove Filters"),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(Strings.removeFilters.tr),
                       ),
                     ),
                   ),

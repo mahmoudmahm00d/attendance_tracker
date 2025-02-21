@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 class AddAttendanceView extends GetView<AddAttendanceController> {
   const AddAttendanceView({super.key});
@@ -15,7 +16,7 @@ class AddAttendanceView extends GetView<AddAttendanceController> {
           icon: const Icon(PhosphorIconsBold.caretLeft),
           onPressed: Get.back,
         ),
-        title: const Text('Add Attendance'),
+        title: Text(Strings.addAttendance.tr),
         centerTitle: true,
       ),
       body: GetBuilder<AddAttendanceController>(
@@ -31,7 +32,7 @@ class AddAttendanceView extends GetView<AddAttendanceController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-                        const Text("Date"),
+                        Text(Strings.date.tr),
                         const SizedBox(height: 4),
                         SizedBox(
                           width: context.width,
@@ -46,7 +47,7 @@ class AddAttendanceView extends GetView<AddAttendanceController> {
                               controller.update();
                             },
                             child: controller.date == null
-                                ? const Text("Select Date")
+                                ? Text(Strings.selectDate.tr)
                                 : Text(
                                     DateFormat("yyyy-MM-dd")
                                         .format(controller.date!),
@@ -66,9 +67,9 @@ class AddAttendanceView extends GetView<AddAttendanceController> {
                   margin: const EdgeInsets.only(bottom: 36),
                   child: ElevatedButton(
                     onPressed: controller.add,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Text('Add Attendance'),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(Strings.addAttendance.tr),
                     ),
                   ),
                 ),

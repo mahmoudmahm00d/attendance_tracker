@@ -33,22 +33,24 @@ class SubjectsRepository {
     return queryResult.map(Subject.fromMap).toList();
   }
 
-  Future<Set<String>> getSubjectAttendanceDates(String subjectId) async {
+  Future<Set<(String, int)>> getSubjectAttendanceDates(String subjectId) async {
     var queryResult = await (await database).rawQuery(
-      "SELECT DISTINCT at FROM Attendance WHERE subjectId = '$subjectId'",
+      """
+      SELECT at, COUNT(userId) as count FROM Attendance
+      WHERE subjectId = '$subjectId'
+      GROUP BY at
+      """,
     );
 
-    return queryResult.map((date) => date["at"].toString()).toSet();
+    return queryResult
+        .map((date) => (date["at"].toString(), date["count"] as int))
+        .toSet();
   }
 
   Future<int> addSubject(Subject subject) async {
     var result = await (await database).insert(
       "Subjects",
-      {
-        "id": subject.id,
-        "name": subject.name,
-        "groupId": subject.groupId
-      },
+      {"id": subject.id, "name": subject.name, "groupId": subject.groupId},
     );
 
     if (result == 0) {

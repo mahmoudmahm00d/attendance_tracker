@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
@@ -56,7 +57,7 @@ class AttendanceController extends GetxController {
   DatabaseExecutionStatus searching = DatabaseExecutionStatus.success;
   TextEditingController search = TextEditingController();
   var showSearch = false.obs;
-  var debouncer = Debouncer(delay: const Duration(milliseconds: 300));
+  var debouncer = Debouncer(delay: const Duration(milliseconds: 500));
 
   final AttendanceRepository repository;
   final SubjectsRepository subjectsRepository;
@@ -97,7 +98,9 @@ class AttendanceController extends GetxController {
   getDates() async {
     loadingDates.value = DatabaseExecutionStatus.loading;
     update();
-    dates = await subjectsRepository.getSubjectAttendanceDates(subject!.id);
+    dates = (await subjectsRepository.getSubjectAttendanceDates(subject!.id))
+        .map((item) => item.$1)
+        .toSet();
     loadingDates.value = DatabaseExecutionStatus.success;
     update();
   }
@@ -198,9 +201,10 @@ class AttendanceController extends GetxController {
 
     if (result != 0) {
       CustomSnackBar.showCustomSnackBar(
-        title: "Attendance added successfully",
-        message:
-            "Added attendace at ${DateFormat("yyyy-MM-dd").format(date)} to ${user.name}",
+        title: Strings.attendanceAddedSuccessfully.tr,
+        message: Strings.addedAttendanceAt.tr
+            .replaceFirst("@date", DateFormat("yyyy-MM-dd").format(date))
+            .replaceFirst("@name", user.name),
       );
       getAttendance(
         searchQuery: search.text,
@@ -224,9 +228,10 @@ class AttendanceController extends GetxController {
     }
 
     CustomSnackBar.showCustomSnackBar(
-      title: "Attendance added successfully",
-      message:
-          "Added attendace at $at to ${selectedAttendance.length} students",
+      title: Strings.attendanceAddedSuccessfully.tr,
+      message: Strings.attendancesAddedSuccessfully.tr
+          .replaceFirst("@date", at)
+          .replaceFirst("@count", selectedAttendance.length.toString()),
     );
     getAttendance(
       searchQuery: search.text,
@@ -243,8 +248,8 @@ class AttendanceController extends GetxController {
     var status = await Permission.storage.request();
     if (!status.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Lack of permission",
-        message: "Please add storage permission",
+        title: Strings.lackOfPermission.tr,
+        message: Strings.addStoragePermission.tr,
       );
 
       return;
@@ -259,7 +264,7 @@ class AttendanceController extends GetxController {
       subject!.id,
       subject!.groupId,
       orderByCount: false,
-      pageSize: 0
+      pageSize: 0,
     );
 
     var dates = await subjectsRepository.getSubjectAttendanceDates(subject!.id);
@@ -267,7 +272,7 @@ class AttendanceController extends GetxController {
     var fileBytes = excel.generateAttendanceReport(
       subject!.name,
       attendanceCount,
-      dates.map((date) => date.toString()).toList(),
+      dates.toList(),
       result.data,
     );
 
@@ -282,13 +287,12 @@ class AttendanceController extends GetxController {
         ..writeAsBytesSync(fileBytes!);
 
       CustomSnackBar.showCustomSnackBar(
-        title: "Attendance report genereated successfully",
-        message: "Report saved at $path",
-      );
+          title: Strings.attendanceReportGeneratedSuccessfully.tr,
+          message: Strings.fileSavedAt.tr.replaceFirst("@path", path));
     } on Exception {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Failed to export students attendance",
-        message: "Please check storage permission",
+        title: Strings.failedToGenerateFile.tr,
+        message: Strings.checkStoragePermission.tr,
       );
     }
   }

@@ -1,3 +1,4 @@
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ulid/ulid.dart';
@@ -30,8 +31,8 @@ class AddAttendanceController extends GetxController {
 
     if (date == null) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Date is required",
-        message: "Select date to add attendance",
+        title: Strings.dateIsRequired.tr,
+        message: Strings.selectDateToAddAttendance.tr,
       );
     }
 

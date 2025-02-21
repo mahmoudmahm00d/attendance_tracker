@@ -4,6 +4,7 @@ import 'package:attendance_tracker/app/components/my_widgets_animator.dart';
 import 'package:attendance_tracker/app/components/no_data_found_widget.dart';
 import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 import '../controllers/groups_controller.dart';
 
@@ -13,56 +14,57 @@ class GroupsView extends GetView<GroupsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(PhosphorIconsBold.caretLeft),
-            onPressed: Get.back,
-          ),
-          title: const Text('Groups'),
-          centerTitle: true,
-          actions: [
-            GetBuilder<GroupsController>(
-              builder: (_) {
-                return PopupMenuButton(
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Icon(PhosphorIconsBold.dotsThreeOutlineVertical),
-                  ),
-                  onSelected: (value) {
-                    controller.toggleShowDeleted();
-                  },
-                  itemBuilder: (context) {
-                    if (controller.showDeleted) {
-                      return [
-                        const PopupMenuItem(
-                          value: 1,
-                          child: Row(
-                            children: [
-                              Icon(PhosphorIconsBold.trash),
-                              SizedBox(width: 8),
-                              Text("Show Non-Deleted"),
-                            ],
-                          ),
-                        ),
-                      ];
-                    }
-
+        leading: IconButton(
+          icon: const Icon(PhosphorIconsBold.caretLeft),
+          onPressed: Get.back,
+        ),
+        title: Text(Strings.groups.tr),
+        centerTitle: true,
+        actions: [
+          GetBuilder<GroupsController>(
+            builder: (_) {
+              return PopupMenuButton(
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Icon(PhosphorIconsBold.dotsThreeOutlineVertical),
+                ),
+                onSelected: (value) {
+                  controller.toggleShowDeleted();
+                },
+                itemBuilder: (context) {
+                  if (controller.showDeleted) {
                     return [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           children: [
-                            Icon(PhosphorIconsBold.trash),
-                            SizedBox(width: 8),
-                            Text("Show Deleted"),
+                            const Icon(PhosphorIconsBold.trash),
+                            const SizedBox(width: 8),
+                            Text(Strings.showNonDeleted.tr),
                           ],
                         ),
                       ),
                     ];
-                  },
-                );
-              },
-            )
-          ]),
+                  }
+
+                  return [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        children: [
+                          const Icon(PhosphorIconsBold.trash),
+                          const SizedBox(width: 8),
+                          Text(Strings.showDeleted.tr),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
+              );
+            },
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.toNamed(Routes.createGroup),
         child: const Icon(PhosphorIconsBold.plus),
@@ -79,15 +81,15 @@ class GroupsView extends GetView<GroupsController> {
                 return Center(
                   child: NoDataFoundWidget(
                     title: controller.showDeleted
-                        ? 'No deleted group found'
-                        : 'No groups found',
+                        ? Strings.noDeletedGroup.tr
+                        : Strings.noGroupsFound.tr,
                     message: controller.showDeleted
-                        ? 'Deleted group to show here'
-                        : 'Try adding group',
+                        ? Strings.deletedGroupToShow.tr
+                        : Strings.tryAddingGroup.tr,
                     icon: PhosphorIconsFill.users,
                     buttonText: controller.showDeleted
-                        ? 'Show Non-Deleted'
-                        : 'Create Group',
+                        ? Strings.showNonDeleted.tr
+                        : Strings.createGroup.tr,
                     action: () => controller.showDeleted
                         ? controller.toggleShowDeleted()
                         : Get.toNamed(Routes.createGroup),
@@ -95,7 +97,9 @@ class GroupsView extends GetView<GroupsController> {
                 );
               }
               return RefreshIndicator(
-                onRefresh: () => controller.getGroups(),
+                onRefresh: () async {
+                  return await controller.getGroups();
+                },
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Padding(
@@ -123,8 +127,8 @@ class GroupsView extends GetView<GroupsController> {
                                       },
                                       child: Text(
                                         group.deleted == 1
-                                            ? "No keep deleted"
-                                            : "No, keep",
+                                            ? Strings.noKeepDeleted.tr
+                                            : Strings.noKeep.tr,
                                       ),
                                     ),
                                     confirm: ElevatedButton(
@@ -133,16 +137,21 @@ class GroupsView extends GetView<GroupsController> {
                                       },
                                       child: Text(
                                         group.deleted == 1
-                                            ? "Yes, Restore"
-                                            : "Yes, delete",
+                                            ? Strings.yesRestore.tr
+                                            : Strings.yesDelete.tr,
                                       ),
                                     ),
                                     titleStyle: context.textTheme.titleLarge,
                                     title: group.deleted == 1
-                                        ? "Restore Group"
-                                        : "Delete Group?",
-                                    middleText:
-                                        "Are really want to ${group.deleted == 1 ? "restore" : "delete"} ${group.name}?",
+                                        ? Strings.restoreGroup.tr
+                                        : Strings.deleteGroup.tr,
+                                    middleText: Strings.confirmDeleteRestore.tr
+                                        .replaceAll(
+                                            '@action',
+                                            group.deleted == 1
+                                                ? Strings.restore.tr
+                                                : Strings.delete.tr)
+                                        .replaceAll('@name', group.name),
                                     barrierDismissible: false,
                                   );
 
@@ -169,18 +178,19 @@ class GroupsView extends GetView<GroupsController> {
                                       onPressed: () {
                                         Get.back(result: false);
                                       },
-                                      child: const Text("No, keep"),
+                                      child: Text(Strings.noKeep.tr),
                                     ),
                                     confirm: ElevatedButton(
                                       onPressed: () {
                                         Get.back(result: true);
                                       },
-                                      child: const Text("Yes, delete"),
+                                      child: Text(Strings.yesDelete.tr),
                                     ),
                                     titleStyle: context.textTheme.titleLarge,
-                                    title: "Delete Group Permenantly",
-                                    middleText:
-                                        "Are really want to delete ${group.name}?",
+                                    title: Strings.deleteGroupPermanently.tr,
+                                    middleText: Strings
+                                        .confirmDeleteGroupPermanently.tr
+                                        .replaceAll('@name', group.name),
                                     barrierDismissible: false,
                                   );
 
@@ -189,13 +199,13 @@ class GroupsView extends GetView<GroupsController> {
                               },
                               itemBuilder: (context) {
                                 return [
-                                  const PopupMenuItem(
+                                  PopupMenuItem(
                                     value: 1,
                                     child: Row(
                                       children: [
-                                        Icon(PhosphorIconsBold.pencil),
-                                        SizedBox(width: 8),
-                                        Text("Edit"),
+                                        const Icon(PhosphorIconsBold.pencil),
+                                        const SizedBox(width: 8),
+                                        Text(Strings.edit.tr),
                                       ],
                                     ),
                                   ),
@@ -212,42 +222,42 @@ class GroupsView extends GetView<GroupsController> {
                                         const SizedBox(width: 8),
                                         Text(
                                           group.deleted == 1
-                                              ? "Restore"
-                                              : "Delete",
+                                              ? Strings.restore.tr
+                                              : Strings.delete.tr,
                                         ),
                                       ],
                                     ),
                                   ),
                                   if (group.deleted == 1)
-                                    const PopupMenuItem(
+                                    PopupMenuItem(
                                       value: 5,
                                       child: Row(
                                         children: [
-                                          Icon(PhosphorIconsBold.trash),
-                                          SizedBox(width: 8),
-                                          Text("Delete Permenantly"),
+                                          const Icon(PhosphorIconsBold.trash),
+                                          const SizedBox(width: 8),
+                                          Text(Strings.deletePermanently.tr),
                                         ],
                                       ),
                                     ),
                                   if (group.deleted == 0)
-                                    const PopupMenuItem(
+                                    PopupMenuItem(
                                       value: 3,
                                       child: Row(
                                         children: [
-                                          Icon(PhosphorIconsBold.books),
-                                          SizedBox(width: 8),
-                                          Text("Subjects"),
+                                          const Icon(PhosphorIconsBold.books),
+                                          const SizedBox(width: 8),
+                                          Text(Strings.subjects.tr),
                                         ],
                                       ),
                                     ),
                                   if (group.deleted == 0)
-                                    const PopupMenuItem(
+                                    PopupMenuItem(
                                       value: 4,
                                       child: Row(
                                         children: [
-                                          Icon(PhosphorIconsBold.student),
-                                          SizedBox(width: 8),
-                                          Text("Students"),
+                                          const Icon(PhosphorIconsBold.student),
+                                          const SizedBox(width: 8),
+                                          Text(Strings.students.tr),
                                         ],
                                       ),
                                     ),
@@ -264,7 +274,11 @@ class GroupsView extends GetView<GroupsController> {
                             height: 60,
                             child: Center(
                               child: Text(
-                                "Showing ${controller.groups.length} of ${controller.groups.length} groups",
+                                Strings.showingGroups.tr
+                                    .replaceAll('@count',
+                                        controller.groups.length.toString())
+                                    .replaceAll('@total',
+                                        controller.groups.length.toString()),
                               ),
                             ),
                           ),

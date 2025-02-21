@@ -3,6 +3,7 @@ import 'package:attendance_tracker/app/components/global_operation_widget.dart';
 import 'package:attendance_tracker/app/data/local/database_helper.dart';
 import 'package:attendance_tracker/app/data/models/subject.dart';
 import 'package:attendance_tracker/app/services/database_execution_status.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -48,8 +49,8 @@ class HomeController extends GetxController {
     var status = await Permission.storage.request();
     if (!status.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Lack of permission",
-        message: "Please add storage permission",
+        title: Strings.lackOfPermission.tr,
+        message: Strings.addStoragePermission.tr,
       );
 
       return;
@@ -58,8 +59,8 @@ class HomeController extends GetxController {
     var dir = await FilePicker.platform.getDirectoryPath();
     if (dir == null || dir.isEmpty) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Aborted",
-        message: "Directory is required",
+        title: Strings.aborted.tr,
+        message: Strings.directoryIsRequired.tr,
       );
       return;
     }
@@ -67,9 +68,8 @@ class HomeController extends GetxController {
     Get.offAll(
       GlobalOperationWidget(
         image: 'assets/images/Loading.svg',
-        title: "Exporting Database",
-        subTitle:
-            "Exporting your database. Do not close the application unitl we done ",
+        title: Strings.exportingDatabase.tr,
+        subTitle: Strings.exportingDatabaseMessage.tr,
         operation: () async {
           return await export(dir);
         },
@@ -81,31 +81,31 @@ class HomeController extends GetxController {
     var status = await Permission.storage.request();
     if (!status.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Lack of permission",
-        message: "Please add storage permission",
+        title: Strings.aborted.tr,
+        message: Strings.directoryIsRequired.tr,
       );
 
       return;
     }
 
     var result = await FilePicker.platform.pickFiles(
-      dialogTitle: "Select database file",
+      dialogTitle: Strings.selectDatabaseFile.tr,
       allowMultiple: false,
       type: FileType.any,
     );
     var file = result?.files[0];
     if (file == null || (file.path?.isEmpty ?? false)) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Aborted",
-        message: "File is required",
+        title: Strings.aborted.tr,
+        message: Strings.fileIsRequired.tr,
       );
       return;
     }
 
     if (!file.path!.endsWith(".db")) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Aborted",
-        message: "Invalid db file",
+        title: Strings.aborted.tr,
+        message: Strings.invalidDbFile.tr,
       );
       return;
     }
@@ -113,9 +113,8 @@ class HomeController extends GetxController {
     Get.offAll(
       GlobalOperationWidget(
         image: 'assets/images/Loading.svg',
-        title: "Importing Database",
-        subTitle:
-            "Importing your database. Do not close the application unitl we done ",
+        title: Strings.importDatabase.tr,
+        subTitle: Strings.importDatabaseMessage.tr,
         operation: () async {
           return await import(file.path!);
         },
@@ -125,12 +124,14 @@ class HomeController extends GetxController {
 
   Future<String?> export(String dir) async {
     var result = await DatabaseHelper().exportDatabase(dir);
-    return result != null ? "Exported to $result" : null;
+    return result != null
+        ? Strings.fileSavedAt.tr.replaceFirst("@path", result)
+        : null;
   }
 
   Future<String?> import(String path) async {
     return (await DatabaseHelper().importDatabase(path))
-        ? "Imported Succesfaully"
+        ? Strings.importedSuccessfully.tr
         : null;
   }
 

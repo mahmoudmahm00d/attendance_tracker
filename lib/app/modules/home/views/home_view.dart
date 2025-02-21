@@ -11,6 +11,7 @@ import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:attendance_tracker/config/theme/dark_theme_colors.dart';
 import 'package:attendance_tracker/config/theme/light_theme_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -61,17 +62,17 @@ class HomeView extends GetView<HomeController> {
                     ListTile(
                       onTap: () => Get.toNamed(Routes.groups),
                       leading: const Icon(PhosphorIconsFill.users),
-                      title: const Text("Groups"),
+                      title: Text(Strings.groups.tr),
                     ),
                     ListTile(
                       onTap: () => Get.toNamed(Routes.subjects),
                       leading: const Icon(PhosphorIconsFill.book),
-                      title: const Text("Subjects"),
+                      title: Text(Strings.subjects.tr),
                     ),
                     ListTile(
                       onTap: () => Get.toNamed(Routes.students),
                       leading: const Icon(PhosphorIconsFill.student),
-                      title: const Text("Students"),
+                      title: Text(Strings.students.tr),
                     ),
                   ],
                 ),
@@ -84,12 +85,12 @@ class HomeView extends GetView<HomeController> {
                     ListTile(
                       onTap: controller.exportDatabase,
                       leading: const Icon(PhosphorIconsFill.boxArrowUp),
-                      title: const Text("Export Database"),
+                      title: Text(Strings.exportDatabase.tr),
                     ),
                     ListTile(
                       onTap: controller.importDatabase,
                       leading: const Icon(PhosphorIconsFill.boxArrowDown),
-                      title: const Text("Import Database"),
+                      title: Text(Strings.importDatabase.tr),
                     ),
                   ],
                 ),
@@ -102,12 +103,12 @@ class HomeView extends GetView<HomeController> {
                     ListTile(
                       onTap: () => Get.toNamed(Routes.preferences),
                       leading: const Icon(PhosphorIconsFill.gearFine),
-                      title: const Text("Preferences"),
+                      title: Text(Strings.preferences.tr),
                     ),
                     ListTile(
                       onTap: () => Get.toNamed(Routes.landing),
                       leading: const Icon(PhosphorIconsFill.info),
-                      title: const Text("About"),
+                      title: Text(Strings.about.tr),
                     ),
                   ],
                 ),
@@ -119,10 +120,11 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     ListTile(
                       onTap: () {
-                        launchUrl(Uri.parse("https://github.com/mahmoudmahm00d/attendance_tracker.git"));
+                        launchUrl(Uri.parse(
+                            "https://github.com/mahmoudmahm00d/attendance_tracker.git"));
                       },
                       leading: const Icon(PhosphorIconsFill.githubLogo),
-                      title: const Text("Give me a star"),
+                      title: Text(Strings.giveMeAStar.tr),
                     ),
                   ],
                 ),
@@ -145,7 +147,7 @@ class HomeView extends GetView<HomeController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Insights",
+                      Strings.insights.tr,
                       style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
@@ -156,7 +158,7 @@ class HomeView extends GetView<HomeController> {
                           height: 120,
                           width: context.width / 2 - 24,
                           icon: PhosphorIconsBold.books,
-                          title: "Subjects",
+                          title: Strings.subjects.tr,
                           subTitle: controller.subjectsCount.toString(),
                         ),
                         const SizedBox(width: 16),
@@ -165,7 +167,7 @@ class HomeView extends GetView<HomeController> {
                           height: 120,
                           width: context.width / 2 - 24,
                           icon: PhosphorIconsBold.users,
-                          title: "Groups",
+                          title: Strings.groups.tr,
                           subTitle: controller.groupsCount.toString(),
                         ),
                       ],
@@ -175,13 +177,13 @@ class HomeView extends GetView<HomeController> {
                       onTap: () => Get.toNamed(Routes.students),
                       height: 120,
                       width: context.width - 32,
-                      title: "Students",
+                      title: Strings.students.tr,
                       subTitle: controller.usersCount.toString(),
                       icon: PhosphorIconsBold.student,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "Quick Actions",
+                      Strings.quickActions.tr,
                       style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
@@ -190,17 +192,17 @@ class HomeView extends GetView<HomeController> {
                       runSpacing: 16,
                       children: [
                         ActionTile(
-                          text: "Add Group",
+                          text: Strings.addGroup.tr,
                           icon: PhosphorIconsBold.users,
                           onTap: () => Get.toNamed(Routes.createGroup),
                         ),
                         ActionTile(
-                          text: "Add Subject",
+                          text: Strings.addSubject.tr,
                           icon: PhosphorIconsBold.book,
                           onTap: () => Get.toNamed(Routes.createSubject),
                         ),
                         ActionTile(
-                          text: "Add Student",
+                          text: Strings.addStudent.tr,
                           icon: PhosphorIconsBold.student,
                           onTap: () => Get.toNamed(Routes.createStudent),
                         ),
@@ -208,7 +210,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "Recent Subjects",
+                      Strings.recentSubjects.tr,
                       style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 16),
@@ -226,11 +228,11 @@ class HomeView extends GetView<HomeController> {
                       Align(
                         alignment: Alignment.topCenter,
                         child: NoDataFoundWidget(
-                          title: "No Recent Subject",
-                          message: "Use subject to appear here",
+                          title: Strings.noRecentSubject.tr,
+                          message: Strings.useSubjectToAppear.tr,
                           action: () => Get.toNamed(Routes.subjects),
                           icon: PhosphorIconsFill.book,
-                          buttonText: "Go to subjects",
+                          buttonText: Strings.goToSubjects.tr,
                         ),
                       )
                     else if (controller.databaseExecutionStatus !=
@@ -251,8 +253,8 @@ class HomeView extends GetView<HomeController> {
                               var status = await Permission.camera.request();
                               if (!status.isGranted) {
                                 CustomSnackBar.showCustomErrorSnackBar(
-                                  title: "Lack of permission",
-                                  message: "Please add camera permission",
+                                  title: Strings.lackOfPermission.tr,
+                                  message: Strings.addCameraPermission.tr,
                                 );
 
                                 return;
@@ -266,23 +268,23 @@ class HomeView extends GetView<HomeController> {
                           },
                           itemBuilder: (context) {
                             return [
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 3,
                                 child: Row(
                                   children: [
-                                    Icon(PhosphorIconsBold.table),
-                                    SizedBox(width: 8),
-                                    Text("Attendance"),
+                                    const Icon(PhosphorIconsBold.table),
+                                    const SizedBox(width: 8),
+                                    Text(Strings.attendance.tr),
                                   ],
                                 ),
                               ),
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 4,
                                 child: Row(
                                   children: [
-                                    Icon(PhosphorIconsBold.qrCode),
-                                    SizedBox(width: 8),
-                                    Text("Take Attendance"),
+                                    const Icon(PhosphorIconsBold.qrCode),
+                                    const SizedBox(width: 8),
+                                    Text(Strings.takeAttendance.tr),
                                   ],
                                 ),
                               ),
@@ -380,7 +382,7 @@ class ActionTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: context.width / 3 - 22,
-        height: 90,
+        height: 100,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isLightTheme

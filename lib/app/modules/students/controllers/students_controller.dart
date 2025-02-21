@@ -4,6 +4,7 @@ import 'package:attendance_tracker/app/components/custom_snackbar.dart';
 import 'package:attendance_tracker/app/data/local/my_shared_pref.dart';
 import 'package:attendance_tracker/app/data/repositories/students_repository.dart';
 import 'package:attendance_tracker/app/services/pdf_service.dart';
+import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class StudentsController extends GetxController {
   Set<Group> selectedManagedGroups = <Group>{};
   bool get filtering => showDeleted || selectedGroups.isNotEmpty;
   bool showDeleted = false;
-  Debouncer debouncer = Debouncer(delay: const Duration(milliseconds: 300));
+  Debouncer debouncer = Debouncer(delay: const Duration(milliseconds: 500));
   bool isProcessing = false;
 
   Future getGroups() async {
@@ -186,8 +187,8 @@ class StudentsController extends GetxController {
     var status = await Permission.storage.request();
     if (!status.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Lack of permission",
-        message: "Please add storage permission",
+        title: Strings.lackOfPermission.tr,
+        message: Strings.addStoragePermission.tr,
       );
 
       return;
@@ -213,8 +214,8 @@ class StudentsController extends GetxController {
         child: const Text("Yes Export"),
       ),
       titleStyle: Get.context!.textTheme.titleLarge,
-      title: "Exporting all student with applied filters",
-      middleText: "This will export all students with applied filters",
+      title: Strings.exportingStudentsTitle.tr,
+      middleText: Strings.exportingStudentsMessage.tr,
       barrierDismissible: false,
     );
 
@@ -255,15 +256,15 @@ class StudentsController extends GetxController {
         ..writeAsBytesSync(fileBytes!);
       Get.back();
       CustomSnackBar.showCustomSnackBar(
-        title: "Students data exported successfully",
-        message: "Report saved at $path",
+        title: Strings.studentsExportedSuccessfully.tr,
+        message: Strings.fileSavedAt.tr.replaceFirst('@path', path),
       );
       isProcessing = false;
     } on Exception {
       Get.back();
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Failed to export students",
-        message: "Please check storage permission",
+        title: Strings.failedToGenerateFile.tr,
+        message: Strings.checkStoragePermission.tr,
       );
       isProcessing = false;
     }
@@ -273,8 +274,8 @@ class StudentsController extends GetxController {
     var status = await Permission.storage.request();
     if (!status.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
-        title: "Lack of permission",
-        message: "Please add storage permission",
+        title: Strings.lackOfPermission.tr,
+        message: Strings.addStoragePermission.tr,
       );
 
       return;
@@ -290,7 +291,7 @@ class StudentsController extends GetxController {
           Get.back();
           update();
         },
-        child: const Text("No use English"),
+        child: Text(Strings.noUseEnglish.tr),
       ),
       confirm: ElevatedButton(
         onPressed: () {
@@ -298,11 +299,11 @@ class StudentsController extends GetxController {
           Get.back();
           update();
         },
-        child: const Text("Yes use Arabic"),
+        child: Text(Strings.yseUseArabic.tr),
       ),
       titleStyle: Get.context!.textTheme.titleLarge,
-      title: "Exporting all student with applied filters using Arabic font",
-      middleText: "This will make the text direction RTL (Right to Left)",
+      title: Strings.exportStudentsWithAppliedFilters.tr,
+      middleText: Strings.textDirectionToRTL.tr,
       barrierDismissible: false,
     );
 
@@ -359,8 +360,8 @@ class StudentsController extends GetxController {
         ..writeAsBytesSync(pdf);
       Get.back();
       Get.snackbar(
-        'Success',
-        'Saved Successfully at "$filePath"',
+        Strings.success.tr,
+        Strings.fileSavedAt.tr.replaceFirst('@path', filePath),
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
@@ -368,8 +369,8 @@ class StudentsController extends GetxController {
     } on Exception {
       Get.back();
       Get.snackbar(
-        "Error",
-        "Something went wrong",
+        Strings.error.tr,
+        Strings.somethingWentWrong.tr,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -391,8 +392,12 @@ class StudentsController extends GetxController {
 
     Get.back();
     CustomSnackBar.showCustomSnackBar(
-        title: "Students updated successfully",
-        message: "${selectedUsers.length} has been updated");
+      title: Strings.studentsUpdatedSuccessfully.tr,
+      message: Strings.countStudentsUpdated.tr.replaceFirst(
+        '@count',
+        selectedUsers.length.toString(),
+      ),
+    );
     selectionEnabled = false;
     selectedManagedGroup = null;
     selectedManagedGroups.clear();
