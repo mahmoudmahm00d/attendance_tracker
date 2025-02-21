@@ -27,7 +27,12 @@ Future<void> main() async {
           data: MyTheme.getThemeData(isLight: themeIsLight),
           child: MediaQuery(
             data: MediaQuery.of(context),
-            child: widget!,
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: widget!,
+            ),
           ),
         );
       },
