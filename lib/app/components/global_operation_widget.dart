@@ -34,7 +34,7 @@ class _GlobalOperationWidgetState extends State<GlobalOperationWidget> {
     });
 
     Future.delayed(const Duration(seconds: 1));
-    Get.toNamed(Routes.home);
+    Get.offNamed(Routes.home);
     if (result == null) {
       CustomSnackBar.showCustomErrorSnackBar(
         title: Strings.error.tr,
