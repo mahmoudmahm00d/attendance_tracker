@@ -5,7 +5,6 @@ import 'package:attendance_tracker/app/data/repositories/students_repository.dar
 import 'package:attendance_tracker/app/data/repositories/subjects_repository.dart';
 import 'package:attendance_tracker/app/modules/attendance/controllers/qr_attendance_controller.dart';
 import 'package:attendance_tracker/app/modules/attendance/controllers/attendance_controller.dart';
-import 'package:attendance_tracker/app/modules/attendance/controllers/add_attendance_controller.dart';
 import 'package:attendance_tracker/app/modules/attendance/controllers/user_attendance_controller.dart';
 
 class AttendanceBinding extends Bindings {
@@ -21,10 +20,6 @@ class AttendanceBinding extends Bindings {
 
     Get.lazyPut<UserAttendanceController>(
       () => UserAttendanceController(AttendanceRepository()),
-    );
-
-    Get.lazyPut<AddAttendanceController>(
-      () => AddAttendanceController(AttendanceRepository()),
     );
 
     Get.lazyPut<QrAttendanceController>(

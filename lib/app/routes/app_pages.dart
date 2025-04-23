@@ -1,5 +1,4 @@
 import 'package:attendance_tracker/app/modules/attendance/bindings/attendance_binding.dart';
-import 'package:attendance_tracker/app/modules/attendance/views/add_attendance_view.dart';
 import 'package:attendance_tracker/app/modules/attendance/views/attendance_view.dart';
 import 'package:attendance_tracker/app/modules/attendance/views/qr_attendance.dart';
 import 'package:attendance_tracker/app/modules/attendance/views/user_attendance_view.dart';
@@ -75,11 +74,6 @@ class AppPages {
         GetPage(
           name: _Paths.userAttendance,
           page: () => const UserAttendancesView(),
-          binding: AttendanceBinding(),
-        ),
-        GetPage(
-          name: _Paths.addAttendance,
-          page: () => const AddAttendanceView(),
           binding: AttendanceBinding(),
         ),
         GetPage(
