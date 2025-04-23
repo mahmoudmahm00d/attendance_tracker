@@ -59,6 +59,7 @@ class AttendanceRepository {
     List<String>? groupIds,
     List<String>? selectedDates,
     bool nonZeroAttendance = false,
+    int count = -1,
     bool orderByCount = true,
     int pageSize = 20,
     int page = 0,
@@ -120,6 +121,12 @@ class AttendanceRepository {
     if (nonZeroAttendance) {
       rawQuery += """
           ${aleadyHasWhere ? "AND" : "WHERE"} count <> 0
+          """;
+    }
+
+    if (-1 < count) {
+      rawQuery += """
+          ${aleadyHasWhere ? "AND" : "WHERE"} count = $count
           """;
     }
 
