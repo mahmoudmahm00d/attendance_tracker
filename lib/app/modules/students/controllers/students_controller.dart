@@ -204,7 +204,7 @@ class StudentsController extends GetxController {
           Get.back();
           update();
         },
-        child: const Text("Cancel"),
+        child: Text(Strings.cancel.tr),
       ),
       confirm: ElevatedButton(
         onPressed: () {
@@ -212,7 +212,7 @@ class StudentsController extends GetxController {
           Get.back();
           update();
         },
-        child: const Text("Yes Export"),
+        child: Text(Strings.ok.tr),
       ),
       titleStyle: Get.context!.textTheme.titleLarge,
       title: Strings.exportingStudentsTitle.tr,
