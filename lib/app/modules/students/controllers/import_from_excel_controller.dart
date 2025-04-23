@@ -35,8 +35,9 @@ class ImportFromExcelController extends GetxController {
   }
 
   pickFile() async {
-    var status = await Permission.storage.request();
-    if (!status.isGranted) {
+    var storageStatus = await Permission.storage.request();
+    var status = await Permission.manageExternalStorage.request();
+    if (!status.isGranted && !storageStatus.isGranted) {
       CustomSnackBar.showCustomErrorSnackBar(
         title: Strings.lackOfPermission.tr,
         message: Strings.addStoragePermission.tr,
