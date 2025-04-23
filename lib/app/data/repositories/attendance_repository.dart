@@ -114,7 +114,7 @@ class AttendanceRepository {
       """;
     }
 
-    var datesCondition = selectedDates != null && selectedDates.isNotEmpty
+    String datesCondition = selectedDates != null && selectedDates.isNotEmpty
         ? selectedDates.map((date) => "AND a.at = '$date'").join("\n")
         : "";
 
@@ -358,11 +358,10 @@ class AttendanceRepository {
     String userId,
     String subjectId,
   ) async {
-    List<Map<String, Object?>> data = await (await database).query(
-      "Attendance",
+    List<Map<String, Object?>> data = await (await database).query("Attendance",
       where: "subjectId = ? and userId = ?",
       whereArgs: [subjectId, userId],
-    );
+        orderBy: "at");
     return data.map(Attendance.fromMap).toList();
   }
 
