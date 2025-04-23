@@ -192,9 +192,10 @@ class AttendanceController extends GetxController {
 
   // Quick Add
   addAttendance(UserAttendance user, DateTime date) async {
+    var at = DateFormat("yyyy-MM-dd").format(date);
     var result = await repository.addAttendance(
       Attendance(
-        id: Ulid.new().toString(),
+        id: "${subject!.id}:${user.id}:$at",
         userId: user.id,
         subjectId: subject!.id,
         at: date,
@@ -212,7 +213,14 @@ class AttendanceController extends GetxController {
         searchQuery: search.text,
         subject: subject,
       );
+
+      return;
     }
+
+    CustomSnackBar.showCustomErrorSnackBar(
+      title: Strings.error.tr,
+      message: Strings.noStudentFound.tr,
+    );
   }
 
   // Bulk Add
@@ -221,7 +229,7 @@ class AttendanceController extends GetxController {
     for (var student in selectedAttendance) {
       await repository.addAttendance(
         Attendance(
-          id: Ulid.new().toString(),
+          id: "${subject!.id}:${student.id}:$at",
           userId: student.id,
           subjectId: subject!.id,
           at: date,
