@@ -264,4 +264,23 @@ const Map<String, String> enUs = {
   Strings.exportingStudentsTitle: "Exporting all student with applied filters",
   Strings.exportingStudentsMessage:
       "This will export all students with applied filters",
+
+  Strings.yesExportDetailed: 'Yes, Export Detailed File',
+  Strings.exportDetailedExcelFileTitle: 'Export Detailed Attendance Excel File',
+  Strings.exportDetailedExcelFileMiddleText:
+      "Exporting all student with detailed attendance report",
+  Strings.noExportNormalExcel: 'No, Export Normal Excel',
+
+  Strings.confirmExit: 'Confirm Exit?',
+  Strings.confirmExitMessage: 'Current selection will be removed',
+  Strings.no: 'No',
+  Strings.yes: 'Yes',
+
+  Strings.attendanceAddedSuccessfully: 'Attendance added successfully',
+  Strings.attendancesAddedSuccessfully:
+      '@count attendances added successfully on @date',
+  Strings.addedAttendanceAt: 'attendances added successfully to @name on @date',
+
+  Strings.filterByCount: 'Filter By Count',
+  Strings.selectedCount: 'Selected Count: @count',
 };

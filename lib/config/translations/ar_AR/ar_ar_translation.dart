@@ -271,7 +271,25 @@ const Map<String, String> arAR = {
   Strings.success: 'نجاح',
   Strings.studentsUpdatedSuccessfully: 'تم تحديث الطلاب بنجاح',
   Strings.countStudentsUpdated: 'تم تحديث @count طالب بنجاح',
-  Strings.exportingStudentsTitle: "تصدير جميع الطلاب الذين تم تطبيق الفلاتر عليهم",
+  Strings.exportingStudentsTitle:
+      "تصدير جميع الطلاب الذين تم تطبيق الفلاتر عليهم",
   Strings.exportingStudentsMessage:
       "هكذ سيتم تصدير جيع الطلاب الناتجة عن تطبيق الفلاتر المختارة",
+
+  Strings.yesExportDetailed: 'نعم, تصدير تقرير مفصل',
+  Strings.noExportNormalExcel: 'لا , تصدير تقرير عادي',
+  Strings.exportDetailedExcelFileTitle: 'تصدير ملف اكسل مفصل',
+  Strings.exportDetailedExcelFileMiddleText:
+      "تصدير ملف اكسل يحوي الطلاب مع تقرير مفصل عن الحضور",
+  
+  Strings.confirmExit: 'هل تريد حقاً الخروج؟',
+  Strings.confirmExitMessage: 'سيتم حذف التحديدات الحالية',
+  Strings.no: 'لا',
+  Strings.yes: 'نعم',
+
+  Strings.attendanceAddedSuccessfully: 'تم اضافة الحضور بنجاح',
+  Strings.attendancesAddedSuccessfully: 'تم اضافة @count حضور بنجاح في @date',
+  Strings.addedAttendanceAt: 'تم اضافة حضور بنجاح ل @name في @date',
+  Strings.filterByCount: 'الفلترة حسب العدد',
+  Strings.selectedCount: 'تم تحديد @count',
 };

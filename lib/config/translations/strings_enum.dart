@@ -263,4 +263,19 @@ class Strings {
 
   static const String exportingStudentsTitle = "exporting_students_title";
   static const String exportingStudentsMessage = "exporting_students_message";
+
+  static const String yesExportDetailed = "yes_export_detailed";
+  static const String exportDetailedExcelFileTitle =
+      "export_detailed_excel_file_title";
+  static const String exportDetailedExcelFileMiddleText =
+      "export_detailed_excel_file_middle_text";
+
+  static const String noExportNormalExcel = "no_export_normal_excel";
+  static const String confirmExit = "confirm_exit";
+  static const String confirmExitMessage = "confirm_exit_message";
+  static const String no = "no";
+  static const String yes = "yes";
+
+  static const String filterByCount = "filter_by_count";
+  static const String selectedCount = "selected_count";
 }
