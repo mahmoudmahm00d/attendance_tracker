@@ -33,7 +33,7 @@ class Group {
   }
 
   @override
-  int get hashCode => Ulid.parse(id).toMillis() * 31;
+  int get hashCode => Ulid.parse(id).hashCode + name.hashCode;
 
   @override
   bool operator ==(Object other) {
