@@ -52,6 +52,8 @@ class AttendanceController extends GetxController {
   Set<String> dates = <String>{};
   Set<String> selectedDates = <String>{};
   var nonZeroAttendance = false.obs;
+  var selectedAttendanceCount = 0.obs;
+  RxBool filterByCount = false.obs;
 
   // Searching
   DatabaseExecutionStatus searching = DatabaseExecutionStatus.success;
@@ -157,8 +159,7 @@ class AttendanceController extends GetxController {
 
     attendanceCount = await repository.getMaxAttendanceCount(subject!.id);
     studentsCount = await repository.getAttendanceCount(subject.groupId);
-    // ignore: invalid_use_of_protected_member
-    var groupIds = selectedGroups.value.map((group) => group.id).toList();
+    var groupIds = selectedGroups.map((group) => group.id).toList();
     var result = await repository.getAttendance(
       subject.id,
       subject.groupId,
@@ -166,6 +167,7 @@ class AttendanceController extends GetxController {
       nonZeroAttendance: nonZeroAttendance.value,
       selectedDates: selectedDates.toList(),
       searchQuery: searchQuery,
+      count: filterByCount.value ? selectedAttendanceCount.value : -1,
       page: page,
       pageSize: length,
     );
