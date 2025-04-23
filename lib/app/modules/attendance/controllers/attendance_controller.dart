@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:attendance_tracker/config/translations/strings_enum.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-import 'package:ulid/ulid.dart';
 
 import 'package:attendance_tracker/app/components/custom_snackbar.dart';
 import 'package:attendance_tracker/app/data/local/my_shared_pref.dart';
@@ -266,6 +266,31 @@ class AttendanceController extends GetxController {
       return;
     }
 
+    bool detailed = false;
+    await Get.defaultDialog(
+      onWillPop: () async => false,
+      titlePadding: const EdgeInsets.all(16),
+      cancel: TextButton(
+        onPressed: () {
+          Get.back();
+          update();
+        },
+        child: Text(Strings.noExportNormalExcel.tr),
+      ),
+      confirm: ElevatedButton(
+        onPressed: () {
+          detailed = true;
+          Get.back();
+          update();
+        },
+        child: Text(Strings.yesExportDetailed.tr),
+      ),
+      titleStyle: Get.context!.textTheme.titleLarge,
+      title: Strings.exportDetailedExcelFileTitle.tr,
+      middleText: Strings.exportDetailedExcelFileMiddleText.tr,
+      barrierDismissible: false,
+    );
+
     var dir = await FilePicker.platform.getDirectoryPath();
     if (dir == null || dir.isEmpty) {
       return;
@@ -280,12 +305,30 @@ class AttendanceController extends GetxController {
 
     var dates = await subjectsRepository.getSubjectAttendanceDates(subject!.id);
 
-    var fileBytes = excel.generateAttendanceReport(
-      subject!.name,
-      attendanceCount,
-      dates.toList(),
-      result.data,
+    Get.dialog(
+      PopScope(
+        canPop: false,
+        child: CupertinoActivityIndicator(
+          radius: 16,
+          color: Get.context?.theme.primaryColor,
+        ),
+      ),
+      barrierColor: Get.context?.theme.scaffoldBackgroundColor,
+      barrierDismissible: false,
     );
+    List<int>? fileBytes;
+    if (!detailed) {
+      fileBytes = excel.generateAttendanceReport(
+          subject!.name, attendanceCount, dates.toList(), result.data);
+    } else {
+      var query = await repository.getDetailedAttendance(
+        subject!.id,
+        subject!.groupId,
+        pageSize: 0,
+      );
+      fileBytes = excel.generateDetailedAttendanceReport(
+          subject!.name, attendanceCount, dates.toList(), query.data);
+    }
 
     try {
       var now = DateTime.now();
@@ -297,10 +340,12 @@ class AttendanceController extends GetxController {
         ..createSync(recursive: true)
         ..writeAsBytesSync(fileBytes!);
 
+      Get.back();
       CustomSnackBar.showCustomSnackBar(
           title: Strings.attendanceReportGeneratedSuccessfully.tr,
           message: Strings.fileSavedAt.tr.replaceFirst("@path", path));
     } on Exception {
+      Get.back();
       CustomSnackBar.showCustomErrorSnackBar(
         title: Strings.failedToGenerateFile.tr,
         message: Strings.checkStoragePermission.tr,
@@ -310,6 +355,7 @@ class AttendanceController extends GetxController {
 
   Future<void> initialize() async {
     await getAttendance(subject: subject);
+    selectedAttendanceCount.value = attendanceCount;
   }
 
   @override
