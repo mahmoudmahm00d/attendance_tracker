@@ -239,13 +239,15 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                 Center(
                   child: SizedBox(
                     width: context.width - 32,
-                    child: GetBuilder<ImportFromExcelController>(builder: (_) {
-                      return IgnorePointer(
-                        ignoring: controller.processing,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller.import();
-                          },
+                    child: GetBuilder<ImportFromExcelController>(
+                      builder: (_) {
+                        return ElevatedButton(
+                          onPressed: controller.processing ||
+                                  controller.filePath == null
+                              ? null
+                              : () async {
+                                  await controller.import();
+                                },
                           child: Padding(
                             padding: const EdgeInsets.all(8),
                             child: Row(
@@ -268,9 +270,9 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(
