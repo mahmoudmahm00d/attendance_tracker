@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/app/data/models/user.dart';
 import 'package:intl/intl.dart';
+import 'package:ulid/ulid.dart';
 
 class Attendance {
   final String id;
@@ -60,6 +61,30 @@ class UserAttendance {
       primaryGroup: map["primaryGroup"],
     );
   }
+}
+
+class DetailedUserAttendance {
+  final String id;
+  final String name;
+  final String? fatherName;
+  final String? primaryGroup;
+  final Map<String, bool> attendance;
+
+  DetailedUserAttendance({
+    required this.name,
+    required this.primaryGroup,
+    required this.id,
+    required this.attendance,
+    this.fatherName,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    return id == (other as DetailedUserAttendance).id;
+  }
+
+  @override
+  int get hashCode => Ulid.parse(id).hashCode;
 }
 
 class SubjectAttendance {
