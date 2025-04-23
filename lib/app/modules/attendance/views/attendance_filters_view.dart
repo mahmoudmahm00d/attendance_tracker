@@ -133,6 +133,7 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                   ],
                 );
               }),
+              const Divider(),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -175,6 +176,55 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                 },
               ),
               const SizedBox(height: 16),
+              const Divider(),
+              Obx(
+                () {
+                  return Row(
+                    children: [
+                      Checkbox(
+                        value: controller.filterByCount.value,
+                        onChanged: (v) {
+                          controller.filterByCount.value = v!;
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      Text(Strings.filterByCount.tr)
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              Obx(
+                () {
+                  if (controller.filterByCount.isFalse) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Column(
+                    children: [
+                      Text(
+                        Strings.selectedCount.trParams(
+                          {'count': controller.selectedAttendanceCount.value.toString()},
+                        ),
+                      ),
+                      Slider(
+                        label:
+                            controller.selectedAttendanceCount.value.toString(),
+                        min: 1,
+                        max: controller.attendanceCount.toDouble(),
+                        value: controller.selectedAttendanceCount.toDouble(),
+                        inactiveColor:
+                            context.theme.primaryColor.withAlpha(150),
+                        onChanged: (count) {
+                          controller.selectedAttendanceCount.value =
+                              count.toInt();
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                },
+              ),
               Center(
                 child: SizedBox(
                   width: context.width - 32,
