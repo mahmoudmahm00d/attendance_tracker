@@ -204,6 +204,149 @@ class AttendanceRepository {
     );
   }
 
+  Future<QueryList<DetailedUserAttendance>> getDetailedAttendance(
+    String subjectId,
+    String groupId, {
+    String searchQuery = "",
+    List<String>? groupIds,
+    int pageSize = 20,
+    int page = 0,
+  }) async {
+    var rawQuery = """
+    SELECT
+      {{cols}}
+    FROM Attendance a 
+    INNER JOIN Users u ON u.id = a.userId
+    """;
+
+    var aleadyHasWhere = false;
+    if (groupIds != null && groupIds.isNotEmpty) {
+      var groups = groupIds.map((id) => "'$id'").join(',');
+      if (groups.length == 1) {
+        rawQuery += """
+        WHERE (primaryGroup in ($groupIds)
+        OR U.id in (SELECT userId FROM GroupUsers WHERE groupId in ($groupIds)))
+        """;
+        aleadyHasWhere = true;
+      } else {
+        for (var gId in groupIds) {
+          rawQuery += """
+          ${aleadyHasWhere ? "AND" : "WHERE"} (primaryGroup = '$gId'
+          OR U.id in (SELECT userId FROM GroupUsers WHERE groupId = '$gId'))
+          """;
+          aleadyHasWhere = true;
+        }
+      }
+    } else {
+      rawQuery += """
+      WHERE
+      (
+        u.primaryGroup = '$groupId'
+        OR u.id in (
+        SELECT
+          gu.userId
+        FROM
+          GroupUsers gu
+        WHERE
+          gu.groupId = '$groupId')
+      )
+      """;
+      aleadyHasWhere = true;
+    }
+
+    if (searchQuery.isNotEmpty) {
+      searchQuery = searchQuery.toLowerCase();
+
+      rawQuery += """
+      ${aleadyHasWhere ? "AND" : "WHERE"} (U.name like ? OR fatherName like ?)
+      """;
+    }
+
+    var countQueryResult = searchQuery.isNotEmpty
+        ? await (await database).rawQuery(
+            rawQuery.replaceFirst("{{cols}}", """
+            COUNT(u.id) as counts,
+            (
+              SELECT
+                COUNT(userId)
+              FROM
+                Attendance a
+              WHERE
+                u.id = a.userId
+              AND
+                a.subjectId = '$subjectId'
+            ) as count
+            """),
+            ['%$searchQuery%'],
+          )
+        : await (await database).rawQuery(
+            rawQuery.replaceFirst(
+              "{{cols}}",
+              """
+            COUNT(u.id) as counts,
+            (
+              SELECT
+                COUNT(userId)
+              FROM
+                Attendance a
+              WHERE
+                u.id = a.userId
+              AND
+                a.subjectId = '$subjectId'
+            ) as count
+            """,
+            ),
+          );
+
+    var rowsCount = countQueryResult[0]["counts"] as int? ?? 0;
+
+    rawQuery += """
+    ORDER BY u.name, u.id
+    """;
+    if (0 < pageSize) {
+      rawQuery += """
+      LIMIT $pageSize
+      OFFSET ${pageSize * page}
+      """;
+    }
+
+    rawQuery = rawQuery.replaceFirst(
+      "{{cols}}",
+      """
+      u.*,
+      a.at
+    """,
+    );
+
+    var data = searchQuery.isNotEmpty
+        ? await (await database).rawQuery(
+            rawQuery,
+            ['%$searchQuery%'],
+          )
+        : await (await database).rawQuery(rawQuery);
+
+    List<DetailedUserAttendance> attendance = [];
+    for (var i = 0; i < data.length; i++) {
+      var detailedUserAttendance = DetailedUserAttendance(
+        id: data[i]['id'] as String,
+        attendance: {data[i]["at"] as String: true},
+        name: data[i]["name"] as String,
+        fatherName: data[i]["fatherName"] as String,
+        primaryGroup: data[i]["primaryGroup"] as String,
+      );
+      if (attendance.contains(detailedUserAttendance)) {
+        attendance[attendance.indexOf(detailedUserAttendance)]
+            .attendance[data[i]["at"] as String] = true;
+      } else {
+        attendance.add(detailedUserAttendance);
+      }
+    }
+    return QueryList(
+      count: rowsCount,
+      data: attendance,
+    );
+  }
+
   Future<List<Attendance>> getUserAttendance(
     String userId,
     String subjectId,
