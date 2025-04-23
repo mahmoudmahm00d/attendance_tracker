@@ -15,6 +15,7 @@ class CustomSnackBar {
       margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
       colorText: Colors.white,
       backgroundColor: Colors.green,
+      isDismissible: true,
       icon: const Icon(
         PhosphorIconsRegular.checkCircle,
         color: Colors.white,
@@ -35,6 +36,7 @@ class CustomSnackBar {
       margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
       colorText: Colors.white,
       backgroundColor: color ?? Colors.redAccent,
+      isDismissible: true,
       icon: const Icon(
         PhosphorIconsRegular.xCircle,
         color: Colors.white,
@@ -53,6 +55,7 @@ class CustomSnackBar {
       duration: duration ?? const Duration(seconds: 3),
       snackStyle: SnackStyle.GROUNDED,
       backgroundColor: color ?? Colors.green,
+      isDismissible: true,
       onTap: (snack) {
         Get.closeAllSnackbars();
       },
@@ -72,6 +75,7 @@ class CustomSnackBar {
       duration: duration ?? const Duration(seconds: 3),
       snackStyle: SnackStyle.GROUNDED,
       backgroundColor: color ?? Colors.redAccent,
+      isDismissible: true,
       onTap: (snack) {
         Get.closeAllSnackbars();
       },
