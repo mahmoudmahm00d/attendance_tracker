@@ -20,7 +20,7 @@ class QrAttendanceController extends GetxController {
   RxBool isScanning = false.obs;
   RxString result = "".obs;
   Rx<User?> latestStudent = Rx<User?>(null);
-  RxSet<User> students = RxSet<User>();
+  RxList<User> students = RxList<User>();
   RxBool autoSave = false.obs;
   bool showSessionUsers = false;
 
@@ -45,7 +45,7 @@ class QrAttendanceController extends GetxController {
         }
 
         if (!students.contains(latestStudent.value)) {
-          students.add(latestStudent.value!);
+          students.insert(0, latestStudent.value!);
           if (autoSave.value) {
             await addAttendance();
           }
@@ -60,8 +60,9 @@ class QrAttendanceController extends GetxController {
 
     status.value = DatabaseExecutionStatus.loading;
     var today = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    var result = 0;
     if (autoSave.value) {
-      await repository.addAttendance(
+      result += await repository.addAttendance(
         Attendance(
           id: "${subject.id}:${latestStudent.value!.id}:$today",
           at: DateTime.now(),
@@ -71,7 +72,7 @@ class QrAttendanceController extends GetxController {
       );
     } else {
       for (var student in students) {
-        await repository.addAttendance(
+        result += await repository.addAttendance(
           Attendance(
             id: "${subject.id}:${student.id}:$today",
             at: DateTime.now(),
@@ -83,14 +84,27 @@ class QrAttendanceController extends GetxController {
     }
 
     status.value = DatabaseExecutionStatus.success;
-    Get.snackbar(
-      "Success",
-      autoSave.value
-          ? "${latestStudent.value!.name} added successfully"
-          : "${students.length} students added successfully",
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: const Duration(milliseconds: 800),
-    );
+    if (result < students.length) {
+      Get.snackbar(
+        Strings.error.tr,
+        Strings.countStudentsAddedSuccessfully
+            .trParams({'count': result.toString()}),
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(milliseconds: 800),
+      );
+    } else {
+      Get.snackbar(
+        Strings.success.tr,
+        autoSave.value
+            ? Strings.usernameAddedSuccessfully
+                .trParams({'name': latestStudent.value!.name})
+            : Strings.countStudentsAddedSuccessfully
+                .trParams({'count': students.length.toString()}),
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(milliseconds: 800),
+      );
+    }
   }
 }
