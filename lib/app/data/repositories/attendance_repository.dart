@@ -359,8 +359,8 @@ class AttendanceRepository {
     String subjectId,
   ) async {
     List<Map<String, Object?>> data = await (await database).query("Attendance",
-      where: "subjectId = ? and userId = ?",
-      whereArgs: [subjectId, userId],
+        where: "subjectId = ? and userId = ?",
+        whereArgs: [subjectId, userId],
         orderBy: "at");
     return data.map(Attendance.fromMap).toList();
   }
@@ -400,15 +400,55 @@ class AttendanceRepository {
   }
 
   Future<int> addAttendance(Attendance attendance) async {
+    var query = """
+    SELECT primaryGroup as groupId FROM users u
+    WHERE u.id = ?
+    AND 
+      primaryGroup IN (SELECT s.groupId FROM Subjects s 
+      WHERE s.id = ?)
+    UNION 
+    SELECT gu.groupId as groupId FROM GroupUsers gu
+    WHERE gu.userId = ?
+    AND
+      groupId IN (SELECT s.groupId FROM Subjects s 
+      WHERE s.id = ?)
+    """;
+    var check = await (await database).rawQuery(
+      query,
+      [
+        attendance.userId,
+        attendance.subjectId,
+        attendance.userId,
+        attendance.subjectId
+      ],
+    );
+
+    if (check.isEmpty) {
+      return 0;
+    }
+
+    var entry = await (await database).rawQuery("""
+    SELECT * FROM Attendance
+    WHERE subjectId = ?
+    AND userId = ?
+    AND at = ?
+    LIMIT 1
+    OFFSET 0
+    """, [
+      attendance.subjectId,
+      attendance.userId,
+      DateFormat('yyyy-MM-dd').format(attendance.at),
+    ]);
+
+    if (entry.isNotEmpty) {
+      return 1;
+    }
+
     var result = await (await database).insert(
       "Attendance",
       attendance.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    if (result == 0) {
-      return 0;
-    }
 
     return result;
   }
@@ -420,10 +460,6 @@ class AttendanceRepository {
       where: "id = ?",
       whereArgs: [attendance.id],
     );
-
-    if (result == 0) {
-      return 0;
-    }
 
     return result;
   }
