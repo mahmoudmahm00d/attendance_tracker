@@ -2,7 +2,6 @@ import 'package:attendance_tracker/app/modules/attendance/controllers/user_atten
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:attendance_tracker/app/components/my_widgets_animator.dart';
-import 'package:attendance_tracker/app/routes/app_pages.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:attendance_tracker/app/components/no_data_found_widget.dart';
@@ -27,14 +26,23 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(
-          Routes.addAttendance,
-          arguments: {
-            "subject": controller.subject,
-            "user": controller.user,
-            "attendance": null,
-          },
-        ),
+        onPressed: () async {
+          var date = await showDatePicker(
+            context: Get.context!,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+            helpText: Strings.selectDate.tr,
+            cancelText: Strings.cancel.tr, // Custom cancel button text
+            confirmText: Strings.select.tr, // Custom confirm button text
+            errorFormatText: Strings.invalidDate.tr, // Custom error message
+            errorInvalidText: Strings.dateOutOfRange.tr,
+          );
+
+          if (date != null) {
+            await controller.add(date);
+          }
+        },
         child: const Icon(PhosphorIconsBold.plus),
       ),
       body: GetBuilder<UserAttendanceController>(builder: (_) {
@@ -51,14 +59,26 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
                   message: Strings.tryAddingAttendance.tr,
                   icon: PhosphorIconsFill.calendarBlank,
                   buttonText: Strings.addAttendance.tr,
-                  action: () => Get.toNamed(
-                    Routes.addAttendance,
-                    arguments: {
-                      "subject": controller.subject,
-                      "user": controller.user,
-                      "attendance": null,
-                    },
-                  ),
+                  action: () async {
+                    var date = await showDatePicker(
+                      context: Get.context!,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(),
+                      helpText: Strings.selectDate.tr,
+                      cancelText:
+                          Strings.cancel.tr, // Custom cancel button text
+                      confirmText:
+                          Strings.select.tr, // Custom confirm button text
+                      errorFormatText:
+                          Strings.invalidDate.tr, // Custom error message
+                      errorInvalidText: Strings.dateOutOfRange.tr,
+                    );
+
+                    if (date != null) {
+                      await controller.add(date);
+                    }
+                  },
                 ),
               );
             }
@@ -71,7 +91,7 @@ class UserAttendancesView extends GetView<UserAttendanceController> {
                   return ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     title: Text(
-                      DateFormat("yyyy-MM-dd")
+                      DateFormat("yyyy-MM-dd, EEEE")
                           .format(controller.attendance[index].at),
                     ),
                     leading: const Icon(PhosphorIconsBold.calendarCheck),
