@@ -1,5 +1,5 @@
 name: attendance_tracker
-version: 1.0.3+7
+version: 1.0.4+9
 publish_to: none
 description: attendance tracker
 environment:
