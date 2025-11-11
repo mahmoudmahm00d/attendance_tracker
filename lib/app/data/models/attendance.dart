@@ -61,6 +61,14 @@ class UserAttendance {
       primaryGroup: map["primaryGroup"],
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return id == (other as UserAttendance).id;
+  }
+
+  @override
+  int get hashCode => Ulid.parse(id).hashCode;
 }
 
 class DetailedUserAttendance {
@@ -78,6 +86,7 @@ class DetailedUserAttendance {
     this.fatherName,
   });
 
+  // TODO: Check these methods
   @override
   bool operator ==(Object other) {
     return id == (other as DetailedUserAttendance).id;

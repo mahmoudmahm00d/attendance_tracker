@@ -394,7 +394,12 @@ class AttendancesView extends GetView<AttendanceController> {
                                                 controller.update();
                                               },
                                         contentPadding: const EdgeInsets.all(0),
-                                        title: Text(attendance.name),
+                                        title: Row(
+                                          children: [
+                                            Text(attendance.name),
+                                            Text(attendance.fatherName != null && attendance.fatherName!.isNotEmpty ? " (${attendance.fatherName})" : "", style: context.textTheme.bodySmall,),
+                                          ],
+                                        ),
                                         subtitle: Row(
                                           children: [
                                             Text(Strings.attended.tr),
