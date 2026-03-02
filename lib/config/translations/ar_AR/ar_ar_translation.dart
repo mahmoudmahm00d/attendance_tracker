@@ -141,7 +141,7 @@ const Map<String, String> arAR = {
   Strings.noSelectedGroups: 'لا توجد مجموعات محددة',
 
   // Import from Excel translations
-  Strings.importFromExcel: 'استيراد من اكسل',
+  Strings.importFromExcel: 'استيراد من اكسل أو CSV',
   Strings.pickFile: 'اختر ملف',
   Strings.fileSelected: 'الملف: تم اختيار @name',
   Strings.processing: 'جاري المعالجة',

@@ -135,7 +135,7 @@ const Map<String, String> enUs = {
   Strings.searchForGroup: 'Search for a group',
   Strings.noSelectedGroups: 'No selected groups',
   // Import from Excel translations
-  Strings.importFromExcel: 'Import From Excel',
+  Strings.importFromExcel: 'Import From Excel or CSV',
   Strings.pickFile: 'Pick File',
   Strings.fileSelected: 'File: @name selected',
   Strings.processing: 'Processing',

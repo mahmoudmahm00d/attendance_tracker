@@ -246,7 +246,10 @@ class ImportFromExcelView extends GetView<ImportFromExcelController> {
                                   controller.filePath == null
                               ? null
                               : () async {
-                                  await controller.import();
+                                  try {
+                                    await controller.import();
+                                    // ignore: empty_catches
+                                  } catch (e) {}
                                 },
                           child: Padding(
                             padding: const EdgeInsets.all(8),

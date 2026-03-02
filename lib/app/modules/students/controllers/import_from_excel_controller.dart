@@ -50,7 +50,7 @@ class ImportFromExcelController extends GetxController {
       dialogTitle: Strings.selectExcelFile.tr,
       allowMultiple: false,
       type: FileType.custom,
-      allowedExtensions: ["xlsx"],
+      allowedExtensions: ["xlsx", "csv"],
     );
 
     if (pickedFile == null) {
@@ -78,43 +78,60 @@ class ImportFromExcelController extends GetxController {
     }
 
     processing = true;
-    var users = await excel.getUsers(filePath!, groupId);
-    int usersAdded = 0;
+    try {
+      List<User> users;
 
-    for (var user in users) {
-      try {
-        var result = await repository.addStudent(
-          user,
-          selectedGroups.map((group) => group.id).toList(),
-        );
-        if (result != 0) {
-          usersAdded++;
-        }
-      } on Exception {
-        continue;
+      if (filePath!.split(".").last == "xlsx") {
+        users = await excel.getUsers(filePath!, groupId);
+      } else {
+        users = await excel.getCsvUsers(filePath!, groupId);
       }
-    }
 
-    if (usersAdded == 0) {
+      int usersAdded = 0;
+
+      for (var user in users) {
+        try {
+          var result = await repository.addStudent(
+            user,
+            selectedGroups.map((group) => group.id).toList(),
+          );
+          if (result != 0) {
+            usersAdded++;
+          }
+        } on Exception {
+          continue;
+        }
+      }
+
+      if (usersAdded == 0) {
+        Get.snackbar(
+          Strings.noStudentAdded.tr,
+          Strings.noStudentFound.tr,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
+        processing = false;
+        return;
+      }
+
+      Get.back();
       Get.snackbar(
-        Strings.noStudentAdded.tr,
-        Strings.noStudentFound.tr,
+        Strings.userAddedSuccessfully.tr,
+        Strings.countStudentsAddedSuccessfully.tr
+            .replaceFirst("@count", usersAdded.toString()),
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } on Exception {
+      Get.snackbar(
+        Strings.error.tr,
+        Strings.somethingWentWrong.tr,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
       );
+    } finally {
       processing = false;
-      return;
     }
-
-    Get.back();
-    Get.snackbar(
-      Strings.userAddedSuccessfully.tr,
-      Strings.countStudentsAddedSuccessfully.tr
-          .replaceFirst("@count", usersAdded.toString()),
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-    );
-    processing = false;
   }
 
   Future<void> initialize() async {

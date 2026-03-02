@@ -1,9 +1,50 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:attendance_tracker/app/data/models/attendance.dart';
 import 'package:excel/excel.dart';
 import 'package:attendance_tracker/app/data/models/user.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:ulid/ulid.dart';
+
+Future<List<User>> getCsvUsers(String filePath, String? groupId) async {
+  try {
+    var file = File(filePath);
+
+    if (!await file.exists()) {
+      return [];
+    }
+
+    List<User> users = [];
+    // Get Lines
+    List<String> lines = await file.readAsLines();
+
+    for (var i = 1; i < lines.length; i++) {
+      var line = lines[i];
+
+      if (line.isBlank!) continue;
+
+      var parts = line.split(',');
+
+      if (parts.length < 2) continue;
+
+      var name = parts[0].trim();
+      var fatherName = parts[1].trim();
+      users.add(
+        User(
+          id: Ulid.new().toString(),
+          name: name,
+          fatherName: fatherName,
+          primaryGroup: groupId,
+        ),
+      );
+    }
+
+    return users;
+  } on Exception catch (e) {
+    log(e.toString());
+    return [];
+  }
+}
 
 Future<List<User>> getUsers(String filePath, String? primaryGroup) async {
   var file = File(filePath);

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:attendance_tracker/app/modules/attendance/controllers/qr_attendance_controller.dart';
 import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
@@ -14,30 +16,34 @@ class QrAttendanceView extends GetView<QrAttendanceController> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        if (controller.students.isNotEmpty) {
+        if (controller.students.isEmpty) {
           Get.back();
           return;
         }
         // Ask for confiramtion
-        final bool shouldPop = await Get.defaultDialog(
-          title: Strings.confirmExit.tr,
-          middleText: Strings.confirmExitMessage.tr,
-          cancel: TextButton(
-            onPressed: () {
-              Get.back(result: false);
-            },
-            child: Text(Strings.no.tr),
-          ),
-          confirm: ElevatedButton(
-            onPressed: () {
-              Get.back(result: true);
-            },
-            child: Text(Strings.yes.tr),
-          ),
-          barrierDismissible: false,
-        );
-        if (shouldPop) {
-          Get.back();
+        try {
+          final bool shouldPop = await Get.defaultDialog(
+            title: Strings.confirmExit.tr,
+            middleText: Strings.confirmExitMessage.tr,
+            cancel: TextButton(
+              onPressed: () {
+                Get.back(result: false);
+              },
+              child: Text(Strings.no.tr),
+            ),
+            confirm: ElevatedButton(
+              onPressed: () {
+                Get.back(result: true);
+              },
+              child: Text(Strings.yes.tr),
+            ),
+            barrierDismissible: false,
+          );
+          if (shouldPop) {
+            Get.back();
+          }
+        } on Exception catch (e) {
+          log(e.toString());
         }
       },
       child: Scaffold(
