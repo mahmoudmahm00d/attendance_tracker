@@ -281,7 +281,7 @@ const Map<String, String> arAR = {
   Strings.exportDetailedExcelFileTitle: 'تصدير ملف اكسل مفصل',
   Strings.exportDetailedExcelFileMiddleText:
       "تصدير ملف اكسل يحوي الطلاب مع تقرير مفصل عن الحضور",
-  
+
   Strings.confirmExit: 'هل تريد حقاً الخروج؟',
   Strings.confirmExitMessage: 'سيتم حذف التحديدات الحالية',
   Strings.no: 'لا',
@@ -292,4 +292,8 @@ const Map<String, String> arAR = {
   Strings.addedAttendanceAt: 'تم اضافة حضور بنجاح ل @name في @date',
   Strings.filterByCount: 'الفلترة حسب العدد',
   Strings.selectedCount: 'تم تحديد @count',
+
+  Strings.ignore: 'تجاهل',
+  Strings.ignoreSelection: 'تجاهل التحديد',
+  Strings.confirmIgnoreSelection: 'هل تريد حقاً تجاهل التحديد الحالي؟',
 };

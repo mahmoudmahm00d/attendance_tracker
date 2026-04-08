@@ -283,4 +283,9 @@ const Map<String, String> enUs = {
 
   Strings.filterByCount: 'Filter By Count',
   Strings.selectedCount: 'Selected Count: @count',
+
+  Strings.ignore: 'Ignore',
+  Strings.ignoreSelection: 'Ignore Selection',
+  Strings.confirmIgnoreSelection:
+      'Are you sure you want to ignore the current selection?',
 };

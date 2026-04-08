@@ -278,4 +278,8 @@ class Strings {
 
   static const String filterByCount = "filter_by_count";
   static const String selectedCount = "selected_count";
+
+  static const String ignore = "ignore";
+  static const String ignoreSelection = "ignore_selection";
+  static const String confirmIgnoreSelection = "confirm_ignore_selection";
 }

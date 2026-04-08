@@ -103,8 +103,8 @@ class ManageGroupsView extends GetView<StudentsController> {
                           const SizedBox(height: 4),
                           TextFormField(
                             onSaved: (_) {
-                                searchController.closeView("");
-                              },
+                              searchController.closeView("");
+                            },
                             controller: searchController,
                             validator: (value) {
                               return null;

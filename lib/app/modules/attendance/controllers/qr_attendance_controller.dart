@@ -1,5 +1,6 @@
 import 'package:attendance_tracker/config/translations/strings_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
@@ -35,6 +36,7 @@ class QrAttendanceController extends GetxController {
         if (isProcessing) return;
         if (scanData.code == null) return;
 
+        // vibrate
         isProcessing = true;
         latestStudent.value =
             await studentsRepository.getStudent(scanData.code!);
@@ -46,6 +48,7 @@ class QrAttendanceController extends GetxController {
 
         if (!students.contains(latestStudent.value)) {
           students.insert(0, latestStudent.value!);
+          HapticFeedback.vibrate();
           if (autoSave.value) {
             await addAttendance();
           }

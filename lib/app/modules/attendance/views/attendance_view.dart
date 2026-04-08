@@ -59,6 +59,30 @@ class AttendancesView extends GetView<AttendanceController> {
                 Get.back();
                 return;
               }
+
+              if (controller.selectedAttendance.isNotEmpty) {
+                final bool shouldPop = await Get.defaultDialog(
+                  title: Strings.ignoreSelection.tr,
+                  middleText: Strings.confirmIgnoreSelection.tr,
+                  cancel: TextButton(
+                    onPressed: () {
+                      Get.back(result: false);
+                    },
+                    child: Text(Strings.no.tr),
+                  ),
+                  confirm: ElevatedButton(
+                    onPressed: () {
+                      Get.back(result: true);
+                    },
+                    child: Text(Strings.ignore.tr),
+                  ),
+                  barrierDismissible: false,
+                );
+                if (shouldPop) {
+                  Get.back();
+                }
+              }
+
               // Ask for confiramtion
               final bool shouldPop = await Get.defaultDialog(
                 title: Strings.confirmExit.tr,
@@ -167,18 +191,40 @@ class AttendancesView extends GetView<AttendanceController> {
         floatingActionButton: GetBuilder<AttendanceController>(
           builder: (_) {
             if (!controller.selectionEnabled) {
-              return FloatingActionButton(
-                onPressed: () {
-                  controller.getGroups();
-                  controller.getDates();
-                  Get.to(
-                    () => const AttendanceFiltersView(),
-                    arguments: controller.subject,
-                  );
-                },
-                child: const Icon(
-                  PhosphorIconsBold.funnel,
-                  size: 24,
+              return SizedBox(
+                height: 120,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          controller.selectionEnabled = true;
+                          controller.showSearch.value = true;
+                          controller.update();
+                        },
+                        child: const Icon(
+                          PhosphorIconsBold.stackPlus,
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {
+                        controller.getGroups();
+                        controller.getDates();
+                        Get.to(
+                          () => const AttendanceFiltersView(),
+                          arguments: controller.subject,
+                        );
+                      },
+                      child: const Icon(
+                        PhosphorIconsBold.funnel,
+                        size: 24,
+                      ),
+                    ),
+                  ],
                 ),
               );
             }
@@ -397,7 +443,15 @@ class AttendancesView extends GetView<AttendanceController> {
                                         title: Row(
                                           children: [
                                             Text(attendance.name),
-                                            Text(attendance.fatherName != null && attendance.fatherName!.isNotEmpty ? " (${attendance.fatherName})" : "", style: context.textTheme.bodySmall,),
+                                            Text(
+                                              attendance.fatherName != null &&
+                                                      attendance.fatherName!
+                                                          .isNotEmpty
+                                                  ? " (${attendance.fatherName})"
+                                                  : "",
+                                              style:
+                                                  context.textTheme.bodySmall,
+                                            ),
                                           ],
                                         ),
                                         subtitle: Row(

@@ -223,13 +223,12 @@ class StudentsRepository {
     if (groupIds.isNotEmpty) {
       for (var groupId in groupIds) {
         await (await database).insert(
-          "GroupUsers",
-          {
-            "groupId": groupId,
-            "userId": user.id,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace
-        );
+            "GroupUsers",
+            {
+              "groupId": groupId,
+              "userId": user.id,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace);
       }
     } else {
       await (await database).rawDelete("""

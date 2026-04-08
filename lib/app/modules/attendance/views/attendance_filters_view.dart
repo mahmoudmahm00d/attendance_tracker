@@ -204,7 +204,10 @@ class AttendanceFiltersView extends GetView<AttendanceController> {
                     children: [
                       Text(
                         Strings.selectedCount.trParams(
-                          {'count': controller.selectedAttendanceCount.value.toString()},
+                          {
+                            'count': controller.selectedAttendanceCount.value
+                                .toString()
+                          },
                         ),
                       ),
                       Slider(

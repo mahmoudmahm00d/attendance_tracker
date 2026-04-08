@@ -8,7 +8,7 @@ class GroupsController extends GetxController {
   // Filters
   bool showDeleted = false;
   DatabaseExecutionStatus status = DatabaseExecutionStatus.loading;
-  
+
   final GroupsRepository repository;
   GroupsController(this.repository);
 
